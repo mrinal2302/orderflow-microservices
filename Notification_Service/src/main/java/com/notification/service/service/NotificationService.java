@@ -34,7 +34,7 @@ public class NotificationService {
         notification.setStatus(status);
         notification.setMessage(message);
         notificationRepository.save(notification);
-        System.out.println("hello");
+        //  System.out.println("hello");
 
         // Send email
         SimpleMailMessage mailMessage = new SimpleMailMessage();
