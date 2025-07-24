@@ -8,6 +8,7 @@ public class DemoController {
 
     @GetMapping("/check")
     public String check() {
+        System.out.println("github checking working or not");
         return "working properly";
     }
 }
