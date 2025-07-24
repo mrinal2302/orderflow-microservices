@@ -1,34 +1,26 @@
 package com.notification.service.dto;
 
-import java.time.LocalDateTime;
-
 public class NotificationResponse {
 
-    private long messageID;
     private String status;
-    private LocalDateTime sentAt;
+    private String sentAt;
+    private String messageId;
 
-    public NotificationResponse(long messageID) {
-        this.messageID = messageID;
+    public NotificationResponse(String status, String sentAt, String messageId) {
         this.status = status;
-        this.sentAt = LocalDateTime.now();
-    }
-
-    public long getMessageID() {
-        return messageID;
-    }
-
-    public void setMessageID(int messageID) {
-        this.messageID = messageID;
+        this.sentAt = sentAt;
+        this.messageId = messageId;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getSentAt() {
+        return sentAt;
     }
 
-
+    public String getMessageId() {
+        return messageId;
+    }
 }
