@@ -1,12 +1,13 @@
 package com.notification.service.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "OrderNotificationTable")
-
+@Builder
 public class OrderNotification {
 
     @Id
@@ -21,7 +22,7 @@ public class OrderNotification {
     public OrderNotification() {
     }
 
-    public OrderNotification(long messageId, String orderId, String recipient, String message, LocalDateTime sentAt, String status) {
+    public OrderNotification(long messageId, String orderId, String recipientEmail, String message, LocalDateTime sentAt, String status) {
         this.messageId = messageId;
         this.orderId = orderId;
         this.recipientEmail = recipientEmail;
@@ -67,7 +68,7 @@ public class OrderNotification {
     }
 
     public void setSentAt(LocalDateTime sentAt) {
-        this.sentAt = sentAt;
+        this.sentAt = LocalDateTime.now();
     }
 
     public String getStatus() {
@@ -77,4 +78,6 @@ public class OrderNotification {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }
+
