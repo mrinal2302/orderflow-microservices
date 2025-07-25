@@ -2,6 +2,7 @@ package com.orderflow.paymentservice.controller;
 
 import com.orderflow.paymentservice.entity.PaymentEntity;
 import com.orderflow.paymentservice.service.PaymentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping("/process")
-    public ResponseEntity<PaymentEntity> create(@RequestBody PaymentEntity entity) {
+    public ResponseEntity<PaymentEntity> create(@Valid @RequestBody PaymentEntity entity) {
         PaymentEntity paymentProcess = paymentService.save(entity);
         return new ResponseEntity<>(paymentProcess, HttpStatus.CREATED);
     }
@@ -33,7 +34,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getAll());
     }
 
-    @GetMapping("/getByOrderid/{orderId}")
+    @GetMapping("/getByOrderId/{orderId}")
     public ResponseEntity<PaymentEntity> getByOrderId(@PathVariable Long orderId) {
         PaymentEntity paymentProcess = paymentService.getByOrderId(orderId);
         return new ResponseEntity<>(paymentProcess, HttpStatus.FOUND);
