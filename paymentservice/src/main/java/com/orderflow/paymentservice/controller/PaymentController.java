@@ -29,13 +29,6 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getAll());
     }
 
-    @GetMapping("/getByOrderId/{orderId}")
-    public ResponseEntity<PaymentEntity> getById(@PathVariable Long orderId) {
-        PaymentEntity paymentProcess = paymentService.getByOrderId(orderId);
-        return new ResponseEntity<>(paymentProcess, HttpStatus.FOUND);
-    }
-
-
     @PutMapping("/updateByOrderId/{orderId}")
     public ResponseEntity<PaymentEntity> updateById(@RequestBody PaymentEntity entity, @PathVariable Long orderId) {
         PaymentEntity paymentUpdate = paymentService.updatePayment(entity, orderId);

@@ -9,8 +9,6 @@ public interface PaymentService {
 
     PaymentEntity save(PaymentEntity entity);
 
-    PaymentEntity getByOrderId(Long orderId);
-
     PaymentEntity updatePayment(PaymentEntity entity, Long orderId);
 
     List<PaymentEntity> getAll();
