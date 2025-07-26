@@ -36,18 +36,23 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentEntity updatePayment(PaymentEntity entity, Long orderId) {
-        PaymentEntity Payment = paymentRepository.findByOrderId(orderId);
-        if (Payment != null) {
-            entity.setPaymentId(Payment.getPaymentId());
-            try {
-                return paymentRepository.save(entity);
-
-            } catch (Exception e) {
-                throw new CustomException("Failed");
-            }
+        PaymentEntity payment = paymentRepository.findByOrderId(orderId);
+        if (payment == null) {
+            throw new CustomException("Payment not found for Order ID: " + orderId);
         }
-        throw new CustomException("payment not found");
+
+        payment.setPaymentId(entity.getPaymentId());
+        payment.setPaymentMethod(entity.getPaymentMethod());
+        payment.setPaymentStatus(entity.getPaymentStatus());
+        payment.setAmount(entity.getAmount());
+
+        try {
+            return paymentRepository.save(payment);
+        } catch (Exception e) {
+            throw new CustomException("Failed to update payment");
+        }
     }
+
 
     @Override
     public List<PaymentEntity> getAll() {
@@ -59,13 +64,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentEntity deleteById(Long id) {
+    public void deleteById(Long id) {
         try {
             paymentRepository.deleteById(id);
         } catch (Exception e) {
             throw new CustomException("failed to delete");
         }
-        return null;
     }
 
 

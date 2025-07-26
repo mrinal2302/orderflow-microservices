@@ -18,16 +18,11 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping("/process")
-    public ResponseEntity<PaymentEntity> create(@Valid @RequestBody PaymentEntity entity) {
-        PaymentEntity paymentProcess = paymentService.save(entity);
-        return new ResponseEntity<>(paymentProcess, HttpStatus.CREATED);
+    public ResponseEntity<String> create(@Valid @RequestBody PaymentEntity entity) {
+        paymentService.save(entity);
+        return ResponseEntity.ok("created");
     }
 
-    @GetMapping("/getById/{paymentId}")
-    public ResponseEntity<PaymentEntity> getById(@PathVariable Long paymentId) {
-        PaymentEntity paymentProcess = paymentService.getByOrderId(paymentId);
-        return new ResponseEntity<>(paymentProcess, HttpStatus.FOUND);
-    }
 
     @GetMapping("/getAllData")
     public ResponseEntity<List<PaymentEntity>> getAll() {
@@ -35,28 +30,24 @@ public class PaymentController {
     }
 
     @GetMapping("/getByOrderId/{orderId}")
-    public ResponseEntity<PaymentEntity> getByOrderId(@PathVariable Long orderId) {
+    public ResponseEntity<PaymentEntity> getById(@PathVariable Long orderId) {
         PaymentEntity paymentProcess = paymentService.getByOrderId(orderId);
         return new ResponseEntity<>(paymentProcess, HttpStatus.FOUND);
     }
 
-    @PutMapping("/updateById/{orderId}")
+
+    @PutMapping("/updateByOrderId/{orderId}")
     public ResponseEntity<PaymentEntity> updateById(@RequestBody PaymentEntity entity, @PathVariable Long orderId) {
         PaymentEntity paymentUpdate = paymentService.updatePayment(entity, orderId);
-        if (paymentUpdate != null) {
-            return new ResponseEntity<>(paymentUpdate, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
+        return new ResponseEntity<>(paymentUpdate, HttpStatus.FOUND);
     }
 
-    @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-        PaymentEntity payment = paymentService.deleteById(id);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/deleteByPaymentId/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
+        paymentService.deleteById(id); // perform the delete action
+        return ResponseEntity.ok("deleted data");
     }
-
 
 }
+
+

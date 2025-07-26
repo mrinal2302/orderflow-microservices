@@ -1,6 +1,7 @@
 package com.orderflow.paymentservice.service;
 
 import com.orderflow.paymentservice.entity.PaymentEntity;
+import jakarta.persistence.Id;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface PaymentService {
 
     List<PaymentEntity> getAll();
 
-    PaymentEntity deleteById(Long id);
+    void deleteById(Long id);
 }
