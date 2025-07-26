@@ -1,4 +1,4 @@
-package com.example.orderflow.ms1.exceptionhandler;
+package com.example.orderservice.exceptionhandler;
 
 public class IdNotFoundException extends RuntimeException {
 

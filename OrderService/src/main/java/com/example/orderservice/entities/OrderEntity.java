@@ -1,4 +1,4 @@
-package com.example.orderflow.ms1.entities;
+package com.example.orderservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
@@ -21,7 +21,6 @@ public class OrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull(message = "Id Cannot be Null")
     private long orderId;
     @NotBlank(message = "CustomerName Cannot be Blank")
     private String customerName;
@@ -34,6 +33,7 @@ public class OrderEntity {
     private LocalDate orderDate;
     private String email;
     private String message;
+    private String paymentMode;
 
 
 }

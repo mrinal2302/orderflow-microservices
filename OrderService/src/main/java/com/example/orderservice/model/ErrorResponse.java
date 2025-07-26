@@ -1,4 +1,4 @@
-package com.example.orderflow.ms1.model;
+package com.example.orderservice.model;
 
 import lombok.Getter;
 import lombok.Setter;

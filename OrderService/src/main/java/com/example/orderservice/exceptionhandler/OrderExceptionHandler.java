@@ -1,6 +1,6 @@
-package com.example.orderflow.ms1.exceptionhandler;
+package com.example.orderservice.exceptionhandler;
 
-import com.example.orderflow.ms1.model.ErrorResponse;
+import com.example.orderservice.model.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,8 @@ public class OrderExceptionHandler {
 
     @ExceptionHandler(IdNotFoundException.class)
 
-    public ResponseEntity<ErrorResponse> idNotFound(IdNotFoundException idNotFoundExcep, HttpServletRequest httpServletRequest) {
-        ErrorResponse errorResponse = new ErrorResponse(idNotFoundExcep.getMessage(), httpServletRequest.getRequestURI());
+    public ResponseEntity<ErrorResponse> idNotFound(IdNotFoundException idNotFoundException, HttpServletRequest httpServletRequest) {
+        ErrorResponse errorResponse = new ErrorResponse(idNotFoundException.getMessage(), httpServletRequest.getRequestURI());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

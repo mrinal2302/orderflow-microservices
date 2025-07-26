@@ -1,6 +1,6 @@
-package com.example.orderflow.ms1.service;
+package com.example.orderservice.service;
 
-import com.example.orderflow.ms1.entities.OrderEntity;
+import com.example.orderservice.entities.OrderEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +9,10 @@ public interface OrderService {
 
     String savedOrder(OrderEntity orderEntity);
 
-
     List<Map<String, Object>> getAllTheOrders();
+
+    Map<String, Object> getOrderById(long id);
+
+
+
 }
