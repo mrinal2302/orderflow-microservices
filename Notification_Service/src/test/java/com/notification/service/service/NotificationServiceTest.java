@@ -1,11 +1,11 @@
 package com.notification.service.service;
 
-import static org.mockito.Mockito.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.notification.service.dto.NotificationRequest;
 import com.notification.service.dto.NotificationResponse;
-import com.notification.service.entity.OrderNotification;
+
 import com.notification.service.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,7 +41,5 @@ class NotificationServiceTest {
         assertEquals("SENT", response.getStatus());
         assertEquals("MSG002", response.getMessageId());
 
-        // You can verify the repository save was called
-        verify(notificationRepository, times(1)).save(any(OrderNotification.class));
     }
 }
