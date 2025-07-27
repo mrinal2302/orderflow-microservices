@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/req")
+@RequestMapping("/inventory")
 public class OrderController {
 
     @Autowired
