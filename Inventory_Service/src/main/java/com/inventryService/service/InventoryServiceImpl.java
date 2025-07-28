@@ -10,40 +10,40 @@ import java.util.List;
 @Service
 public class InventoryServiceImpl implements InventoryService {
     @Autowired
-    private InventoryRepository orderRepository;
+    private InventoryRepository inventoryRepository;
 
     @Override
     public InventoryEntity getValueSaveIn(InventoryEntity entity) {
-        return orderRepository.save(entity);
+        return inventoryRepository.save(entity);
     }
 
     @Override
     public InventoryEntity getOrderById(Long id) {
-        return orderRepository.findById(id).get();
+        return inventoryRepository.findById(id).get();
     }
 
     @Override
     public List<InventoryEntity> getAllOrderId() {
-        return orderRepository.findAll();
+        return inventoryRepository.findAll();
     }
 
     @Override
     public InventoryEntity updateOrderById(Long id, InventoryEntity entity) {
-        InventoryEntity orderEntity = orderRepository.findById(id).get();
+        InventoryEntity orderEntity = inventoryRepository.findById(id).get();
         orderEntity.setProductName(orderEntity.getProductName());
         orderEntity.setAvailableQuantity(orderEntity.getAvailableQuantity());
         orderEntity.setPrice(orderEntity.getPrice());
-        return orderRepository.save(orderEntity);
+        return inventoryRepository.save(orderEntity);
     }
 
     @Override
-    public void delOrder(Long id) {
-        orderRepository.deleteById(id);
+    public void delInventory(Long id) {
+        inventoryRepository.deleteById(id);
     }
 
     @Override
     public List<InventoryEntity> findByOrderProductNameStartingWithIgnoringCase(String name) {
-        return orderRepository.findByProductNameStartingWithIgnoringCase(name);
+        return inventoryRepository.findByProductNameStartingWithIgnoringCase(name);
 
     }
 

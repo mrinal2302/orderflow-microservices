@@ -15,7 +15,7 @@ public interface InventoryService {
 
     InventoryEntity updateOrderById(Long id, InventoryEntity entity);
 
-    void delOrder(Long id);
+    void delInventory(Long id);
 
     List<InventoryEntity> findByOrderProductNameStartingWithIgnoringCase(String name);
 
@@ -25,3 +25,4 @@ public interface InventoryService {
 }
 
 
+//cntrl shift f(check karne k liye method)
