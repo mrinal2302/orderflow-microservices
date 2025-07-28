@@ -7,6 +7,7 @@ import com.notification.service.dto.NotificationRequest;
 import com.notification.service.dto.NotificationResponse;
 
 import com.notification.service.repository.NotificationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,9 +24,13 @@ class NotificationServiceTest {
     @InjectMocks
     private NotificationService notificationService;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
     @Test
     public void testCreateNotification() {
-        MockitoAnnotations.openMocks(this);
+
 
         // Arrange
         NotificationRequest request = new NotificationRequest();
