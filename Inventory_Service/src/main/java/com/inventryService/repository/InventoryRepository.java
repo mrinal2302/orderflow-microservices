@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<InventoryEntity, Long> {
-    List<InventoryEntity> findByProductNameStartingWithIgnoringCase(String name);
+
+    List<InventoryEntity> findByProductNameStartingWithIgnoringCase(String productName);
 
 }

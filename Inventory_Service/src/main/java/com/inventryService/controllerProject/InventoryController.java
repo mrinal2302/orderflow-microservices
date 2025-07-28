@@ -22,32 +22,32 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.OK).body(inventory);
     }
 
-    @GetMapping("/get_order/{id}")
-    private ResponseEntity<InventoryEntity> getOrderById(@PathVariable Long id) {
-        InventoryEntity inventoryEntity = inventoryService.getOrderById(id);
+    @GetMapping("/get_inventory/{id}")
+    private ResponseEntity<InventoryEntity> getInventoryById(@PathVariable Long id) {
+        InventoryEntity inventoryEntity = inventoryService.getInventoryById(id);
         return ResponseEntity.status(HttpStatus.FOUND).body(inventoryEntity);
     }
 
     @GetMapping("/getAll")
-    private ResponseEntity<List<InventoryEntity>> getAllOrderId() {
-        List<InventoryEntity> orderEntities = inventoryService.getAllOrderId();
-        return ResponseEntity.status(HttpStatus.OK).body(orderEntities);
-    }
-
-    @PutMapping("/upateOrder/{id}")
-    private ResponseEntity<InventoryEntity> updateOrderById(@PathVariable Long id, @RequestBody InventoryEntity entity) {
-        InventoryEntity inventoryEntities = inventoryService.updateOrderById(id, entity);
+    private ResponseEntity<List<InventoryEntity>> getAllinventoryId() {
+        List<InventoryEntity> inventoryEntities = inventoryService.getAllinventoryId();
         return ResponseEntity.status(HttpStatus.OK).body(inventoryEntities);
     }
 
-    @DeleteMapping("/delOrder/{id}")
-    public void delInventory(@PathVariable Long id) {
-        inventoryService.delInventory(id);
+    @PutMapping("/upateinventory/{id}")
+    private ResponseEntity<InventoryEntity> updateInventoryById(@PathVariable Long id, @RequestBody InventoryEntity entity) {
+        InventoryEntity inventoryEntities = inventoryService.updateInventoryById(id, entity);
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryEntities);
     }
 
-    @GetMapping("/getOrderByProductName")
-    private ResponseEntity<List<InventoryEntity>> findByOrderProductNameStartingWithIgnoringCase(String name) {
-        List<InventoryEntity> inventoryEntities = inventoryService.findByOrderProductNameStartingWithIgnoringCase(name);
+    @DeleteMapping("/delinventory/{id}")
+    public void delInventory(@PathVariable Long id) {
+        inventoryService.delInventoryBYId(id);
+    }
+
+    @GetMapping("/getinventoryByProductName/{productName}")
+    private ResponseEntity<List<InventoryEntity>> findByProductNameStartingWithIgnoringCase(@PathVariable String productName) {
+        List<InventoryEntity> inventoryEntities = inventoryService.findByProductNameStartingWithIgnoringCase(productName);
         return ResponseEntity.status(HttpStatus.FOUND).body(inventoryEntities);
     }
 

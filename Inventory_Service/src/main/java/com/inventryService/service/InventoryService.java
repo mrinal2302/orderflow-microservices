@@ -9,20 +9,17 @@ public interface InventoryService {
     InventoryEntity getValueSaveIn(InventoryEntity entity);
 
 
-    InventoryEntity getOrderById(Long id);
+    InventoryEntity getInventoryById(Long id);
 
-    List<InventoryEntity> getAllOrderId();
+    List<InventoryEntity> getAllinventoryId();
 
-    InventoryEntity updateOrderById(Long id, InventoryEntity entity);
+    InventoryEntity updateInventoryById(Long id, InventoryEntity entity);
 
-    void delInventory(Long id);
+    void delInventoryBYId(Long id);
 
-    List<InventoryEntity> findByOrderProductNameStartingWithIgnoringCase(String name);
+    List<InventoryEntity> findByProductNameStartingWithIgnoringCase(String productName);
 
-    //List<OrderEntity> findByOrderPriceGreaterThan();
 
-    //List<OrderEntity> findByOrderPriceGreaterThan(BigDecimal ordPrice);
 }
 
 
-//cntrl shift f(check karne k liye method)
