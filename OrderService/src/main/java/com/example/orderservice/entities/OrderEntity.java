@@ -35,19 +35,4 @@ public class OrderEntity {
     private String message;
     private String paymentMode;
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
