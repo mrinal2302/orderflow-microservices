@@ -16,16 +16,4 @@ public class ErrorResponse {
         this.timestamp = LocalDateTime.now();
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
 }

@@ -1,7 +1,8 @@
 package com.orderflow.paymentservice.service;
 
 import com.orderflow.paymentservice.entity.PaymentEntity;
-import com.orderflow.paymentservice.exceptionHandler.CustomException;
+import com.orderflow.paymentservice.exceptionHandler.OrderIdNotFoundException;
+import com.orderflow.paymentservice.exceptionHandler.PaymentNotFound;
 import com.orderflow.paymentservice.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,19 +16,19 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentRepository paymentRepository;
 
     @Override
-    public PaymentEntity save(PaymentEntity entity) {
+    public void saveData(PaymentEntity entity) {
         try {
-            return paymentRepository.save(entity);
+            paymentRepository.save(entity);
         } catch (Exception e) {
-            throw new CustomException("failed to save data");
+            throw new OrderIdNotFoundException("failed to save data");
         }
 
     }
     @Override
-    public PaymentEntity updatePayment(PaymentEntity entity, Long orderId) {
+    public PaymentEntity updatePaymentDetails(PaymentEntity entity, Long orderId) {
         PaymentEntity payment = paymentRepository.findByOrderId(orderId);
         if (payment == null) {
-            throw new CustomException("Payment not found for Order ID: " + orderId);
+            throw new OrderIdNotFoundException("Payment not found for Order ID: " + orderId);
         }
 
         payment.setPaymentId(entity.getPaymentId());
@@ -38,26 +39,26 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             return paymentRepository.save(payment);
         } catch (Exception e) {
-            throw new CustomException("Failed to update payment");
+            throw new OrderIdNotFoundException("Failed to update payment");
         }
     }
 
 
     @Override
-    public List<PaymentEntity> getAll() {
+    public List<PaymentEntity> getAllPaymentDetails() {
         try {
             return paymentRepository.findAll();
         } catch (Exception e) {
-            throw new CustomException("failed to get payment details");
+            throw new PaymentNotFound("failed to get payment details");
         }
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteByOrderId(Long Orderid) {
         try {
-            paymentRepository.deleteById(id);
+            paymentRepository.deleteById(Orderid);
         } catch (Exception e) {
-            throw new CustomException("failed to delete");
+            throw new OrderIdNotFoundException("failed to delete");
         }
     }
 
