@@ -18,26 +18,26 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping("/process")
-    public ResponseEntity<String> create(@Valid @RequestBody PaymentEntity entity) {
-        paymentService.save(entity);
+    public ResponseEntity<String> createPaymentDetails(@Valid @RequestBody PaymentEntity entity) {
+        paymentService.saveData(entity);
         return ResponseEntity.ok("created");
     }
 
 
-    @GetMapping("/getAllData")
-    public ResponseEntity<List<PaymentEntity>> getAll() {
-        return ResponseEntity.ok(paymentService.getAll());
+    @GetMapping("/getAllPaymentData")
+    public ResponseEntity<List<PaymentEntity>> getPayementDetils() {
+        return ResponseEntity.ok(paymentService.getAllPaymentDetails());
     }
 
     @PutMapping("/updateByOrderId/{orderId}")
-    public ResponseEntity<PaymentEntity> updateById(@RequestBody PaymentEntity entity, @PathVariable Long orderId) {
-        PaymentEntity paymentUpdate = paymentService.updatePayment(entity, orderId);
+    public ResponseEntity<PaymentEntity> updateByOrderId(@RequestBody PaymentEntity entity, @PathVariable Long orderId) {
+        PaymentEntity paymentUpdate = paymentService.updatePaymentDetails(entity, orderId);
         return new ResponseEntity<>(paymentUpdate, HttpStatus.FOUND);
     }
 
-    @DeleteMapping("/deleteByPaymentId/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
-        paymentService.deleteById(id); // perform the delete action
+    @DeleteMapping("/deleteByPaymentId/{PaymentId}")
+    public ResponseEntity<String> deleteOrderDetails(@PathVariable Long PaymentId) {
+        paymentService.deleteByOrderId(PaymentId);
         return ResponseEntity.ok("deleted data");
     }
 

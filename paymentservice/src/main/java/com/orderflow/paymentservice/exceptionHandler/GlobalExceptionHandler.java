@@ -11,8 +11,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex, HttpServletRequest httpServletRequest) {
+    @ExceptionHandler(OrderIdNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderIdException(OrderIdNotFoundException ex, HttpServletRequest httpServletRequest) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), httpServletRequest.getRequestURI());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PaymentNotFound.class)
+    public ResponseEntity<ErrorResponse> handlePaymentException(OrderIdNotFoundException ex, HttpServletRequest httpServletRequest) {
         ErrorResponse error = new ErrorResponse(ex.getMessage(), httpServletRequest.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
