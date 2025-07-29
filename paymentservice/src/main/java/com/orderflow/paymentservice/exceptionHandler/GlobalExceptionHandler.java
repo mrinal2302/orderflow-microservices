@@ -17,8 +17,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(OrderIdNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleCustomException(OrderIdNotFoundException ex, HttpServletRequest httpServletRequest) {
+    @ExceptionHandler(PaymentNotFound.class)
+    public ResponseEntity<ErrorResponse> handlePaymentException(PaymentNotFound ex, HttpServletRequest httpServletRequest) {
         ErrorResponse error = new ErrorResponse(ex.getMessage(), httpServletRequest.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

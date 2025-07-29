@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PaymentService {
 
-    void saveData(PaymentEntity entity);
+    void savePaymentData(PaymentEntity entity);
 
     PaymentEntity updatePaymentDetails(PaymentEntity entity, Long orderId);
 

@@ -16,7 +16,7 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentRepository paymentRepository;
 
     @Override
-    public void saveData(PaymentEntity entity) {
+    public void savePaymentData(PaymentEntity entity) {
         try {
             paymentRepository.save(entity);
         } catch (Exception e) {

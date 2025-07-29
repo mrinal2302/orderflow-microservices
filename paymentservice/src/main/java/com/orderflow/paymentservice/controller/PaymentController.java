@@ -19,7 +19,7 @@ public class PaymentController {
 
     @PostMapping("/process")
     public ResponseEntity<String> createPaymentDetails(@Valid @RequestBody PaymentEntity entity) {
-        paymentService.saveData(entity);
+        paymentService.savePaymentData(entity);
         return ResponseEntity.ok("created");
     }
 
