@@ -5,7 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4641ad73-4257-45e3-bc46-8b94631ecd11" name="Changes" comment="Changes done for OrderService Setup">
+
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/HELP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/src/main/java/com/os/order/OrderMsApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/src/test/java/com/os/order/OrderMsApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderMS/target/classes/com/os/order/OrderMsApplication.class" beforeDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Order" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -40,13 +55,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.OrderMsApplication.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Coding/orderflow-microservices&quot;
+
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.OrderMsApplication.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Merging OFS-S1Notification",
+    "last_opened_file_path": "C:/Coding/orderflow-microservices"
+
   }
 }</component>
   <component name="RecentsManager">
