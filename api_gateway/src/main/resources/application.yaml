@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: api-gateway
+  # here we are using static security checking i.e hardcode values
+  # by default it uses form based login
+  # we can chage it to basic auth which will pop up at the time when we hit the url
+  security:
+    user:
+      name: admin
+      password: password
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: order-service
+              uri: http://localhost:9091  # URL where Order Service runs
+              predicates:
+                - Path=/order/**
+
+            - id: payment-service
+              uri: http://localhost:9092  # URL where Payment Service runs
+              predicates:
+                - Path=/payment/**
+
+            - id: inventory-service
+              uri: http://localhost:9093  # URL where Inventory Service runs
+              predicates:
+                - Path=/inventory/**
+
+            - id: notification-service
+              uri: http://localhost:9094  # URL where Notification Service runs
+              predicates:
+                - Path=/notification/**
+
+server:
+  port: 9090
