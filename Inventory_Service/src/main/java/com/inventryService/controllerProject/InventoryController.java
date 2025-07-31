@@ -1,6 +1,7 @@
 package com.inventryService.controllerProject;
 
 import com.inventryService.entity.InventoryEntity;
+import com.inventryService.model.ReverseStockRequest;
 import com.inventryService.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,16 @@ public class InventoryController {
     private ResponseEntity<List<InventoryEntity>> findByProductNameStartingWithIgnoringCase(@PathVariable String productName) {
         List<InventoryEntity> inventoryEntities = inventoryService.findByProductNameStartingWithIgnoringCase(productName);
         return ResponseEntity.status(HttpStatus.FOUND).body(inventoryEntities);
+    }
+
+    private ResponseEntity<String> reverseStock(@RequestBody ReverseStockRequest request) {
+        try {
+            inventoryService.reverseStock(request.getProductId(), request.getQuantity());
+            return ResponseEntity.ok("Stock is reserved");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+        }
     }
 
 

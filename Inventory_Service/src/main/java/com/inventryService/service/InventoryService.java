@@ -20,6 +20,7 @@ public interface InventoryService {
     List<InventoryEntity> findByProductNameStartingWithIgnoringCase(String productName);
 
 
+    public void reverseStock(Long productId, int quantity);
 }
 
 

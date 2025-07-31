@@ -47,4 +47,17 @@ public class InventoryServiceImpl implements InventoryService {
 
     }
 
+    @Override
+    public void reverseStock(Long productId, int quantity) {
+        InventoryEntity inventory = inventoryRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found find by ID : " + productId));
+
+        if (inventory.getAvailableQuantity() < quantity) {
+            throw new RuntimeException("Insufficient stock for productId: " + productId);
+        }
+
+        inventory.setAvailableQuantity(inventory.getAvailableQuantity() - quantity);
+        inventoryRepository.save(inventory);
+
+    }
+
 }
