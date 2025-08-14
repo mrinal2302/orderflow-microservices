@@ -23,31 +23,6 @@ class JwtUtilTest {
         testKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
         ReflectionTestUtils.setField(jwtUtil, "key", testKey);
     }
-/*
-    @Test
-    void testExpiredToken() {
-        String token = Jwts.builder()
-                .setSubject("testuser")
-                .setExpiration(new Date(System.currentTimeMillis() - 1000)) // expired
-                .signWith(testKey)
-                .compact();
-
-        assertFalse(jwtUtil.validateToken(token), "Expired token should be invalid");
-    }
-
-    @Test
-    void testExtractExpiration() {
-        Date expectedExpiration = new Date(System.currentTimeMillis() + 3600000); // +1 hour
-        String token = Jwts.builder()
-                .setSubject("testuser")
-                .setExpiration(expectedExpiration)
-                .signWith(testKey)
-                .compact();
-
-        assertEquals(expectedExpiration, jwtUtil.extractExpiration(token),
-                "Extracted expiration should match the expected date");
-    }*/
-
     @Test
     void testValidToken() {
         String token = Jwts.builder()
