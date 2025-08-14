@@ -1,5 +1,6 @@
 package com.orderflow.paymentservice.controller;
 
+import com.orderflow.paymentservice.dto.PaymentNotifyStatus;
 import com.orderflow.paymentservice.entity.PaymentEntity;
 import com.orderflow.paymentservice.service.PaymentService;
 import jakarta.validation.Valid;
@@ -17,15 +18,15 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PostMapping("/process")
-    public ResponseEntity<String> createPaymentDetails(@Valid @RequestBody PaymentEntity entity) {
+    @PostMapping("/savePaymentData")
+    public ResponseEntity<String> savePaymentData(@Valid @RequestBody PaymentEntity entity) {
         paymentService.savePaymentData(entity);
-        return ResponseEntity.ok("created");
+        return ResponseEntity.ok("Payment data saved successfully");
     }
 
 
-    @GetMapping("/getAllPaymentData")
-    public ResponseEntity<List<PaymentEntity>> getPayementDetils() {
+    @GetMapping("/getAllData")
+    public ResponseEntity<List<PaymentEntity>> getAllPayments() {
         return ResponseEntity.ok(paymentService.getAllPaymentDetails());
     }
 
@@ -40,7 +41,16 @@ public class PaymentController {
         paymentService.deleteByOrderId(PaymentId);
         return ResponseEntity.ok("deleted data");
     }
+    
+
+    @GetMapping("/getPaymentByOrderId/{orderId}")
+    public ResponseEntity<PaymentEntity> getPaymentByOrderId(@PathVariable Long orderId) {
+        return ResponseEntity.ok(paymentService.getPaymentByOrderId(orderId));
+    }
+    @GetMapping("/notify/{orderId}")
+    public ResponseEntity<PaymentNotifyStatus> sendNotification(@PathVariable Long orderId) {
+
+        return ResponseEntity.ok(paymentService.sendNotify(orderId));
+    }
 
 }
-
-
