@@ -75,4 +75,16 @@ class JwtSecurityContextRepositoryTest {
 
         verify(authenticationManager, never()).authenticate(any(Authentication.class));
     }
+
+    @Test
+    void save_ShouldReturnEmptyMono() {
+        MockServerHttpRequest request = MockServerHttpRequest.get("/").build();
+        ServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        SecurityContext mockContext = mock(SecurityContext.class);
+
+        StepVerifier.create(repository.save(exchange, mockContext))
+                .verifyComplete();
+    }
+
 }
