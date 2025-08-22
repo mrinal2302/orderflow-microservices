@@ -12,6 +12,8 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class JwtAuthenticationManagerTest {
@@ -26,7 +28,7 @@ class JwtAuthenticationManagerTest {
     }
 
     @Test
-    void authenticate_ValidToken_ReturnsAuthentication() {
+    void authenticate_ValidToken_ReturnsAuthentication_Success() {
         String token = "valid-token";
         String username = "testUser";
 
@@ -42,7 +44,7 @@ class JwtAuthenticationManagerTest {
     }
 
     @Test
-    void authenticate_InvalidToken_ReturnsEmptyMono() {
+    void authenticate_InvalidToken_ReturnsEmptyMono_Failure() {
         String token = "invalid-token";
         Authentication auth = new UsernamePasswordAuthenticationToken(null, token);
 
@@ -52,5 +54,19 @@ class JwtAuthenticationManagerTest {
 
         verify(jwtUtil).extractUsername(token);
         verify(jwtUtil, never()).validateToken(token);
+    }
+
+    @Test
+    void authenticate_ExceptionThrown() {
+        String token = "bad-token";
+        Authentication authRequest = new UsernamePasswordAuthenticationToken(null, token);
+
+        when(jwtUtil.extractUsername(token)).thenThrow(new RuntimeException("JWT parsing failed"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> authenticationManager.authenticate(authRequest));
+
+        assertEquals("JWT parsing failed", exception.getMessage());
+        verify(jwtUtil).extractUsername(token);
     }
 }

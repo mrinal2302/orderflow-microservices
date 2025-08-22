@@ -4,6 +4,7 @@ import com.example.orderservice.dto.PaymentRequest;
 import com.example.orderservice.entities.OrderEntity;
 import com.example.orderservice.enums.OrderStatus;
 import com.example.orderservice.enums.PaymentMode;
+import com.example.orderservice.exceptionhandler.OrderIdNotFoundException;
 import com.example.orderservice.service.OrderServiceImp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -125,6 +126,7 @@ class OrderControllerTest {
         assertThrows(RuntimeException.class, () -> orderController.getOrderById(1L));
         verify(orderServiceImp, times(1)).getOrderById(1L);
     }
+/*
 
     @Test
     void testGetOrderDetailsForPayment_Success() {
@@ -166,5 +168,54 @@ class OrderControllerTest {
         assertThrows(RuntimeException.class, () -> orderController.getOrderDetailsForPayment(orderId));
         verify(orderServiceImp, times(1)).getOrderDetailsForPayment(orderId);
     }
+*/
 
+
+    @Test
+    void testPayForOrder_Success() {
+
+        Long orderId = 1L;
+        String mockResponse = "Payment processed successfully for OrderID: 1";
+
+        when(orderServiceImp.sendOrderForPayment(orderId)).thenReturn(mockResponse);
+
+        ResponseEntity<String> response = orderController.payForOrder(orderId);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(mockResponse, response.getBody());
+
+        verify(orderServiceImp, times(1)).sendOrderForPayment(orderId);
+    }
+
+    @Test
+    void testPayForOrder_Failure() {
+
+        Long orderId = 2L;
+        String errorResponse = "Payment failed for OrderID: 2";
+
+        when(orderServiceImp.sendOrderForPayment(orderId)).thenReturn(errorResponse);
+
+        ResponseEntity<String> response = orderController.payForOrder(orderId);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(errorResponse, response.getBody());
+        verify(orderServiceImp, times(1)).sendOrderForPayment(orderId);
+    }
+
+    @Test
+    void testPayForOrder_OrderNotFoundException() {
+
+        Long orderId = 99L;
+
+        when(orderServiceImp.sendOrderForPayment(orderId))
+                .thenThrow(new OrderIdNotFoundException("OrderID " + orderId + " is Invalid"));
+
+        OrderIdNotFoundException exception = assertThrows(
+                OrderIdNotFoundException.class,
+                () -> orderController.payForOrder(orderId)
+        );
+
+        assertEquals("OrderID 99 is Invalid", exception.getMessage());
+        verify(orderServiceImp, times(1)).sendOrderForPayment(orderId);
+    }
 }

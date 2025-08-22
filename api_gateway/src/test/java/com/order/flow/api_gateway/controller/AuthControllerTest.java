@@ -37,7 +37,6 @@ class AuthControllerTest {
                 "username", username,
                 "password", password
         ));
-
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Map<?, ?> body = (Map<?, ?>) response.getBody();
@@ -45,7 +44,6 @@ class AuthControllerTest {
 
         verify(jwtUtil, times(1)).generateToken(username);
     }
-
     @Test
     void login_InvalidCredentials_Fail() {
 
@@ -55,5 +53,18 @@ class AuthControllerTest {
         ));
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Invalid credentials", response.getBody());
+    }
+
+    @Test
+    void login_Credential_Exception() {
+        String username = "admin";
+        String password = "password";
+
+        when(jwtUtil.generateToken(username)).thenThrow(new RuntimeException("User_Not_Found"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                authController.login(Map.of("username", username, "password", password)));
+
+        assertEquals("User_Not_Found", exception.getMessage());
     }
 }

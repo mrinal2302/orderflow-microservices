@@ -37,8 +37,14 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
 
+    @PostMapping("/{orderId}/pay")
+    public ResponseEntity<String> payForOrder(@PathVariable Long orderId) {
+        String paymentResponse = orderServiceImp.sendOrderForPayment(orderId);
+        return ResponseEntity.ok(paymentResponse);
+    }
+/*
     @GetMapping("/{id}/payment-details")
     public PaymentRequest getOrderDetailsForPayment(@PathVariable long id) {
         return orderServiceImp.getOrderDetailsForPayment(id);
-    }
+    }*/
 }
