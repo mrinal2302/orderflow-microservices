@@ -9,27 +9,32 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(OrderIdNotFoundException.class)
-    public ResponseEntity<String> handleOrderIdNotFoundException(OrderIdNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> handleOrderIdNotFoundException(OrderIdNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), "ORDER_ID_NOT_FOUND");
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PaymentNotFound.class)
-    public ResponseEntity<String> handlePaymentNotFound(PaymentNotFound ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> handlePaymentNotFound(PaymentNotFound ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), "PAYMENT_NOT_FOUND");
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PaymentUpdateException.class)
-    public ResponseEntity<String> handlePaymentUpdateException(PaymentUpdateException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handlePaymentUpdateException(PaymentUpdateException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), "PAYMENT_UPDATE_ERROR");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ServiceCommunicationException.class)
-    public ResponseEntity<String> handleServiceCommunicationException(ServiceCommunicationException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleServiceCommunicationException(ServiceCommunicationException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), "SERVICE_COMMUNICATION_ERROR");
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGeneralException(Exception ex) {
-        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+        ErrorResponse error = new ErrorResponse("An unexpected error occurred: " + ex.getMessage(), "UNEXPECTED_ERROR");
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
