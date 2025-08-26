@@ -1,175 +1,209 @@
 package com.orderflow.paymentservice.service;
 
+import com.orderflow.paymentservice.client.InventoryServiceClient;
+import com.orderflow.paymentservice.client.NotificationServiceClient;
+import com.orderflow.paymentservice.dto.InventoryRequest;
+import com.orderflow.paymentservice.dto.NotificationRequest;
+import com.orderflow.paymentservice.dto.OrderResponse;
 import com.orderflow.paymentservice.entity.PaymentEntity;
 import com.orderflow.paymentservice.exceptionHandler.OrderIdNotFoundException;
 import com.orderflow.paymentservice.exceptionHandler.PaymentNotFound;
+import com.orderflow.paymentservice.exceptionHandler.PaymentUpdateException;
+import com.orderflow.paymentservice.exceptionHandler.ServiceCommunicationException;
 import com.orderflow.paymentservice.model.PaymentMethod;
 import com.orderflow.paymentservice.model.PaymentStatus;
 import com.orderflow.paymentservice.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)   // ✅ Enable Mockito with JUnit 5
 class PaymentServiceImplTest {
+
+    @InjectMocks
+    private PaymentServiceImpl paymentService;  // ✅ Mocks get injected automatically
 
     @Mock
     private PaymentRepository paymentRepository;
 
-    @InjectMocks
-    private PaymentServiceImpl paymentService;
+    @Mock
+    private InventoryServiceClient inventoryServiceClient;
+
+    @Mock
+    private NotificationServiceClient notificationServiceClient;
+
+    private PaymentEntity paymentEntity;
+    private OrderResponse orderResponse;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        paymentEntity = PaymentEntity.builder()
+                .paymentId(1L)
+                .orderId(101L)
+                .amount(500.0)
+                .paymentMethod(PaymentMethod.CREDIT_CARD)
+                .paymentStatus(PaymentStatus.SUCCESS)
+                .emailAddress("test@example.com")
+                .build();
+
+        orderResponse = new OrderResponse();
+        orderResponse.setOrderId(101L);
+        orderResponse.setAmount(500.0);
+        orderResponse.setPaymentMode("CREDIT_CARD");
+        orderResponse.setEmail("test@example.com");
+        orderResponse.setProductId(10L);
+        orderResponse.setProductName("Laptop");
+        orderResponse.setQuantityOrdered(1);
+    }
+
+    // ================= processPaymentFromOrder =================
+
+    @Test
+    void testProcessPaymentFromOrder_Success() {
+        when(paymentRepository.save(any(PaymentEntity.class))).thenReturn(paymentEntity);
+        doNothing().when(inventoryServiceClient).inventoryUpdate(any(InventoryRequest.class));
+        doNothing().when(notificationServiceClient).sendNotification(any(NotificationRequest.class));
+
+        String result = paymentService.processPaymentFromOrder(orderResponse);
+
+        assertEquals("Payment processed successfully", result);
+        verify(paymentRepository, atLeastOnce()).save(any(PaymentEntity.class));
     }
 
     @Test
-    void savePaymentData_success() {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setOrderId(1L);
-        entity.setAmount(1000.0);
-        entity.setPaymentMethod(PaymentMethod.CREDIT_CARD);
-        entity.setPaymentStatus(PaymentStatus.SUCCESS);
-        entity.setEmailAddress("success@ok.com");
+    void testProcessPaymentFromOrder_Failure_ServiceThrowsIllegalArgument() {
+        when(paymentRepository.save(any(PaymentEntity.class))).thenReturn(paymentEntity);
+        doThrow(new IllegalArgumentException("Invalid product")).when(inventoryServiceClient)
+                .inventoryUpdate(any(InventoryRequest.class));
 
-        when(paymentRepository.save(any(PaymentEntity.class))).thenReturn(entity);
-
-        assertDoesNotThrow(() -> paymentService.savePaymentData(entity));
-        verify(paymentRepository, times(1)).save(any(PaymentEntity.class));
+        assertThrows(IllegalArgumentException.class, () -> paymentService.processPaymentFromOrder(orderResponse));
+        verify(paymentRepository, atLeastOnce()).save(any(PaymentEntity.class));
     }
 
     @Test
-    void savePaymentData_failure_throwsOrderIdNotFoundException() {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setOrderId(1L);
-        entity.setAmount(1000.0);
-        entity.setPaymentMethod(PaymentMethod.CREDIT_CARD);
-        entity.setPaymentStatus(PaymentStatus.SUCCESS);
-        entity.setEmailAddress("fail@ok.com");
+    void testProcessPaymentFromOrder_Exception_ServiceCommunicationFailure() {
+        when(paymentRepository.save(any(PaymentEntity.class))).thenReturn(paymentEntity);
+        doThrow(new RuntimeException("Inventory down")).when(inventoryServiceClient)
+                .inventoryUpdate(any(InventoryRequest.class));
 
-        when(paymentRepository.save(any(PaymentEntity.class))).thenThrow(new RuntimeException("db"));
+        ServiceCommunicationException ex = assertThrows(ServiceCommunicationException.class,
+                () -> paymentService.processPaymentFromOrder(orderResponse));
 
-        OrderIdNotFoundException ex = assertThrows(OrderIdNotFoundException.class, () -> paymentService.savePaymentData(entity));
-        assertTrue(ex.getMessage().contains("failed to save data"));
+        assertTrue(ex.getMessage().contains("Service communication failed"));
     }
 
     @Test
-    void updatePaymentDetails_success() {
-        Long orderId = 10L;
-        PaymentEntity existing = new PaymentEntity();
-        existing.setOrderId(orderId);
-        existing.setAmount(100.0);
-        existing.setPaymentMethod(PaymentMethod.DEBIT_CARD);
-        existing.setPaymentStatus(PaymentStatus.PENDING);
-        existing.setEmailAddress("old@ok.com");
+    void testProcessPaymentFromOrder_notificationFailure_marksFailedAndThrowsServiceCommunication() {
+        when(paymentRepository.save(any(PaymentEntity.class))).thenReturn(paymentEntity);
+        doNothing().when(inventoryServiceClient).inventoryUpdate(any(InventoryRequest.class));
+        doThrow(new RuntimeException("notification down")).when(notificationServiceClient).sendNotification(any());
 
-        PaymentEntity updates = new PaymentEntity();
-        updates.setAmount(200.0);
-        updates.setPaymentMethod(PaymentMethod.CREDIT_CARD);
-        updates.setPaymentStatus(PaymentStatus.SUCCESS);
+        ServiceCommunicationException ex = assertThrows(ServiceCommunicationException.class,
+                () -> paymentService.processPaymentFromOrder(orderResponse));
+        assertTrue(ex.getMessage().contains("Service communication failed"));
 
-        when(paymentRepository.findByOrderId(orderId)).thenReturn(existing);
-        when(paymentRepository.save(any(PaymentEntity.class))).thenAnswer(inv -> inv.getArgument(0));
+        ArgumentCaptor<PaymentEntity> captor = ArgumentCaptor.forClass(PaymentEntity.class);
+        verify(paymentRepository, atLeast(2)).save(captor.capture());
+        PaymentEntity lastSaved = captor.getAllValues().get(captor.getAllValues().size() - 1);
+        assertEquals(PaymentStatus.FAILED, lastSaved.getPaymentStatus());
+    }
 
-        PaymentEntity saved = paymentService.updatePaymentDetails(updates, orderId);
-        assertEquals(200.0, saved.getAmount());
-        assertEquals(PaymentMethod.CREDIT_CARD, saved.getPaymentMethod());
-        assertEquals(PaymentStatus.SUCCESS, saved.getPaymentStatus());
-        verify(paymentRepository).save(existing);
+    // ================= updatePaymentDetails =================
+
+    @Test
+    void testUpdatePaymentDetails_Success() {
+        when(paymentRepository.findByOrderId(101L)).thenReturn(paymentEntity);
+        when(paymentRepository.save(any(PaymentEntity.class))).thenReturn(paymentEntity);
+
+        PaymentEntity updated = paymentService.updatePaymentDetails(paymentEntity, 101L);
+
+        assertEquals(PaymentStatus.SUCCESS, updated.getPaymentStatus());
+        verify(paymentRepository, times(1)).save(paymentEntity);
     }
 
     @Test
-    void updatePaymentDetails_notFound_throwsOrderIdNotFoundException() {
-        Long orderId = 99L;
-        when(paymentRepository.findByOrderId(orderId)).thenReturn(null);
-        PaymentEntity updates = new PaymentEntity();
-        OrderIdNotFoundException ex = assertThrows(OrderIdNotFoundException.class, () -> paymentService.updatePaymentDetails(updates, orderId));
-        assertTrue(ex.getMessage().contains("Payment not found for Order ID"));
+    void testUpdatePaymentDetails_Failure_NotFound() {
+        when(paymentRepository.findByOrderId(101L)).thenReturn(null);
+
+        assertThrows(OrderIdNotFoundException.class,
+                () -> paymentService.updatePaymentDetails(paymentEntity, 101L));
     }
 
     @Test
-    void getAllPaymentDetails_success() {
-        PaymentEntity e1 = new PaymentEntity();
-        PaymentEntity e2 = new PaymentEntity();
-        when(paymentRepository.findAll()).thenReturn(Arrays.asList(e1, e2));
-        List<PaymentEntity> out = paymentService.getAllPaymentDetails();
-        assertEquals(2, out.size());
-        verify(paymentRepository).findAll();
+    void testUpdatePaymentDetails_Exception_SaveFails() {
+        when(paymentRepository.findByOrderId(101L)).thenReturn(paymentEntity);
+        when(paymentRepository.save(any(PaymentEntity.class)))
+                .thenThrow(new RuntimeException("DB error"));
+
+        assertThrows(PaymentUpdateException.class,
+                () -> paymentService.updatePaymentDetails(paymentEntity, 101L));
+    }
+
+    // ================= getAllPaymentDetails =================
+
+    @Test
+    void testGetAllPaymentDetails_Success() {
+        when(paymentRepository.findAll()).thenReturn(Arrays.asList(paymentEntity));
+
+        List<PaymentEntity> payments = paymentService.getAllPaymentDetails();
+
+        assertEquals(1, payments.size());
     }
 
     @Test
-    void getAllPaymentDetails_failure_throwsPaymentNotFound() {
-        when(paymentRepository.findAll()).thenThrow(new RuntimeException("db"));
-        PaymentNotFound ex = assertThrows(PaymentNotFound.class, () -> paymentService.getAllPaymentDetails());
-        assertTrue(ex.getMessage().contains("failed to get payment details"));
+    void testGetAllPaymentDetails_Failure_EmptyList() {
+        when(paymentRepository.findAll()).thenReturn(Arrays.asList());
+
+        List<PaymentEntity> payments = paymentService.getAllPaymentDetails();
+
+        assertTrue(payments.isEmpty());
+    }
+
+    // ================= deleteByPaymentId =================
+
+    @Test
+    void testDeleteByPaymentId_Success() {
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(paymentEntity));
+        doNothing().when(paymentRepository).delete(paymentEntity);
+
+        paymentService.deleteByPaymentId(1L);
+
+        verify(paymentRepository, times(1)).delete(paymentEntity);
     }
 
     @Test
-    void deleteByOrderId_success() {
-        assertDoesNotThrow(() -> paymentService.deleteByOrderId(1L));
-        verify(paymentRepository).deleteById(1L);
+    void testDeleteByPaymentId_Failure_NotFound() {
+        when(paymentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(PaymentNotFound.class, () -> paymentService.deleteByPaymentId(1L));
+    }
+
+    // ================= getPaymentByOrderId =================
+
+    @Test
+    void testGetPaymentByOrderId_Success() {
+        when(paymentRepository.findByOrderId(101L)).thenReturn(paymentEntity);
+
+        PaymentEntity result = paymentService.getPaymentByOrderId(101L);
+
+        assertEquals(101L, result.getOrderId());
     }
 
     @Test
-    void deleteByOrderId_failure_throwsOrderIdNotFoundException() {
-        doThrow(new RuntimeException("db")).when(paymentRepository).deleteById(anyLong());
-        OrderIdNotFoundException ex = assertThrows(OrderIdNotFoundException.class, () -> paymentService.deleteByOrderId(1L));
-        assertTrue(ex.getMessage().contains("failed to delete"));
-    }
+    void testGetPaymentByOrderId_Failure_NotFound() {
+        when(paymentRepository.findByOrderId(101L)).thenReturn(null);
 
-    @Test
-    void getPaymentByOrderId_success() {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setOrderId(42L);
-        when(paymentRepository.findByOrderId(42L)).thenReturn(entity);
-        PaymentEntity out = paymentService.getPaymentByOrderId(42L);
-        assertNotNull(out);
-        assertEquals(42L, out.getOrderId());
-    }
-
-    @Test
-    void getPaymentByOrderId_notFound_throwsPaymentNotFound() {
-        when(paymentRepository.findByOrderId(55L)).thenReturn(null);
-        PaymentNotFound ex = assertThrows(PaymentNotFound.class, () -> paymentService.getPaymentByOrderId(55L));
-        assertTrue(ex.getMessage().contains("Payment not found for Order ID"));
-    }
-
-    @Test
-    void sendNotify_success_buildsNotifyStatus() {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setOrderId(5L);
-        entity.setEmailAddress("a@b.com");
-        entity.setPaymentStatus(PaymentStatus.SUCCESS);
-        when(paymentRepository.findByOrderId(5L)).thenReturn(entity);
-
-        var notify = paymentService.sendNotify(5L);
-        assertEquals(5L, notify.getOrderId());
-        assertEquals("a@b.com", notify.getEmailAddress());
-        assertEquals("SUCCESS", notify.getPaymentStatus());
-    }
-
-    @Test
-    void sendNotify_missingFields_returnsNotifyWithNulls() {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setOrderId(6L);
-        // emailAddress and paymentStatus are null by default
-        when(paymentRepository.findByOrderId(6L)).thenReturn(entity);
-
-        var notify = assertDoesNotThrow(() -> paymentService.sendNotify(6L));
-        assertNotNull(notify);
-        assertEquals(6L, notify.getOrderId());
-        assertNull(notify.getEmailAddress());
-        // String.valueOf(null) -> "null"
-        assertEquals("null", notify.getPaymentStatus());
+        assertThrows(PaymentNotFound.class, () -> paymentService.getPaymentByOrderId(101L));
     }
 }

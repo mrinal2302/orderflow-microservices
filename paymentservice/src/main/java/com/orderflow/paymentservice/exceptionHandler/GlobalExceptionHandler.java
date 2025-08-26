@@ -1,31 +1,35 @@
 package com.orderflow.paymentservice.exceptionHandler;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-@ResponseStatus
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(OrderIdNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleOrderIdException(OrderIdNotFoundException ex, HttpServletRequest httpServletRequest) {
-        ErrorResponse error = new ErrorResponse(ex.getMessage(), httpServletRequest.getRequestURI());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> handleOrderIdNotFoundException(OrderIdNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PaymentNotFound.class)
-    public ResponseEntity<ErrorResponse> handlePaymentException(PaymentNotFound ex, HttpServletRequest httpServletRequest) {
-        ErrorResponse error = new ErrorResponse(ex.getMessage(), httpServletRequest.getRequestURI());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> handlePaymentNotFound(PaymentNotFound ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PaymentUpdateException.class)
+    public ResponseEntity<String> handlePaymentUpdateException(PaymentUpdateException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ServiceCommunicationException.class)
+    public ResponseEntity<String> handleServiceCommunicationException(ServiceCommunicationException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex, HttpServletRequest httpServletRequest) {
-        ErrorResponse error = new ErrorResponse(ex.getMessage(), httpServletRequest.getRequestURI());
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> handleGeneralException(Exception ex) {
+        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

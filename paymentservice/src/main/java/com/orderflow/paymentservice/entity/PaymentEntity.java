@@ -9,11 +9,11 @@ import lombok.*;
 @Entity
 @Table(name = "payments")
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class PaymentEntity {
 
     @Id
@@ -24,7 +24,7 @@ public class PaymentEntity {
     @NotNull(message = "amount should not be empty")
     private Double amount;
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "paymentMethod should not be empty")
+    @NotNull(message = "paymentMode should not be empty")
     private PaymentMethod paymentMethod;
     @Enumerated(EnumType.STRING)
     @NotNull(message = "paymentStatus should not be empty")

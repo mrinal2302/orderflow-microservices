@@ -1,107 +1,212 @@
 package com.orderflow.paymentservice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orderflow.paymentservice.dto.OrderResponse;
 import com.orderflow.paymentservice.entity.PaymentEntity;
 import com.orderflow.paymentservice.model.PaymentMethod;
 import com.orderflow.paymentservice.model.PaymentStatus;
 import com.orderflow.paymentservice.service.PaymentService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(PaymentController.class)
 class PaymentControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private PaymentController paymentController;
 
-    @MockitoBean
+    @Mock
     private PaymentService paymentService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private PaymentEntity paymentEntity;
+    private OrderResponse orderResponse;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        // PaymentEntity dummy
+        paymentEntity = PaymentEntity.builder()
+                .paymentId(1L)
+                .orderId(101L)
+                .amount(500.0)
+                .paymentMethod(PaymentMethod.CREDIT_CARD)  // ✅ must match your enum
+                .paymentStatus(PaymentStatus.SUCCESS)      // ✅ must match your enum
+                .emailAddress("test@example.com")
+                .build();
+
+        // OrderResponse dummy (for processPayment)
+        orderResponse = new OrderResponse();
+        orderResponse.setOrderId(101L);
+        orderResponse.setAmount(500.0);
+        orderResponse.setPaymentMode("UPI");
+        orderResponse.setEmail("test@example.com");
+        //orderResponse.setEmailAddress("test@example.com");
+    }
+
+    // ----------- processPayment Tests ------------
 
     @Test
-    void testGetPaymentByOrderId() throws Exception {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setOrderId(1L);
-        entity.setAmount(1000.0);
-        entity.setPaymentMethod(PaymentMethod.CREDIT_CARD);
-        entity.setEmailAddress("test@ok.com");
-        entity.setPaymentStatus(PaymentStatus.SUCCESS);
+    void testProcessPayment_Success() {
+        when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
+                .thenReturn("Payment processed successfully");
 
-        Mockito.when(paymentService.getPaymentByOrderId(anyLong())).thenReturn(entity);
+        ResponseEntity<String> response = paymentController.processPayment(orderResponse);
 
-        mockMvc.perform(get("/payment/getPaymentByOrderId/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderId").value(1))
-                .andExpect(jsonPath("$.amount").value(1000.0))
-                .andExpect(jsonPath("$.paymentMethod").value("CREDIT_CARD"))
-                .andExpect(jsonPath("$.emailAddress").value("test@ok.com"))
-                .andExpect(jsonPath("$.paymentStatus").value("SUCCESS"));
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Payment processed successfully", response.getBody());
+        verify(paymentService, times(1)).processPaymentFromOrder(any(OrderResponse.class));
     }
 
     @Test
-    void testGetAllPayments() throws Exception {
-        PaymentEntity entity1 = new PaymentEntity();
-        entity1.setOrderId(1L);
-        entity1.setAmount(500.0);
-        entity1.setPaymentMethod(PaymentMethod.DEBIT_CARD);
-        entity1.setEmailAddress("a@ok.com");
-        entity1.setPaymentStatus(PaymentStatus.SUCCESS);
+    void testProcessPayment_Failure() {
+        when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
+                .thenReturn("Payment failed");
 
-        PaymentEntity entity2 = new PaymentEntity();
-        entity2.setOrderId(2L);
-        entity2.setAmount(1500.0);
-        entity2.setPaymentMethod(PaymentMethod.UPI);
-        entity2.setEmailAddress("b@ok.com");
-        entity2.setPaymentStatus(PaymentStatus.PENDING);
+        ResponseEntity<String> response = paymentController.processPayment(orderResponse);
 
-        List<PaymentEntity> list = Arrays.asList(entity1, entity2);
-
-        Mockito.when(paymentService.getAllPaymentDetails()).thenReturn(list);
-
-        mockMvc.perform(get("/payment/getAllData")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].orderId").value(1))
-                .andExpect(jsonPath("$[1].orderId").value(2));
+        assertEquals("Payment failed", response.getBody());
     }
 
     @Test
-    void testSavePaymentData() throws Exception {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setOrderId(10L);
-        entity.setAmount(250.0);
-        entity.setPaymentMethod(PaymentMethod.UPI);
-        entity.setEmailAddress("save@ok.com");
-        entity.setPaymentStatus(PaymentStatus.SUCCESS);
+    void testProcessPayment_Exception() {
+        when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
+                .thenThrow(new RuntimeException("Service unavailable"));
 
-        Mockito.doNothing().when(paymentService).savePaymentData(any(PaymentEntity.class));
+        assertThrows(RuntimeException.class,
+                () -> paymentController.processPayment(orderResponse));
+    }
 
-        mockMvc.perform(post("/payment/savePaymentData")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(entity)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Payment data saved successfully"));
+    // ----------- getAllPayments Tests ------------
+
+    @Test
+    void testGetAllPayments_Success() {
+        when(paymentService.getAllPaymentDetails())
+                .thenReturn(Arrays.asList(paymentEntity));
+
+        ResponseEntity<List<PaymentEntity>> response = paymentController.getAllPayments();
+
+        assertEquals(1, response.getBody().size());
+    }
+
+    @Test
+    void testGetAllPayments_Failure_EmptyList() {
+        when(paymentService.getAllPaymentDetails())
+                .thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<PaymentEntity>> response = paymentController.getAllPayments();
+
+        assertTrue(response.getBody().isEmpty());
+    }
+
+    @Test
+    void testGetAllPayments_Exception() {
+        when(paymentService.getAllPaymentDetails())
+                .thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(RuntimeException.class,
+                () -> paymentController.getAllPayments());
+    }
+
+    // ----------- updateByOrderId Tests ------------
+
+    @Test
+    void testUpdateByOrderId_Success() {
+        when(paymentService.updatePaymentDetails(any(PaymentEntity.class), anyLong()))
+                .thenReturn(paymentEntity);
+
+        ResponseEntity<PaymentEntity> response = paymentController.updateByOrderId(paymentEntity, 101L);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(101L, response.getBody().getOrderId());
+    }
+
+    @Test
+    void testUpdateByOrderId_Failure() {
+        when(paymentService.updatePaymentDetails(any(PaymentEntity.class), anyLong()))
+                .thenReturn(null);
+
+        ResponseEntity<PaymentEntity> response = paymentController.updateByOrderId(paymentEntity, 101L);
+
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testUpdateByOrderId_Exception() {
+        when(paymentService.updatePaymentDetails(any(PaymentEntity.class), anyLong()))
+                .thenThrow(new RuntimeException("Update failed"));
+
+        assertThrows(RuntimeException.class,
+                () -> paymentController.updateByOrderId(paymentEntity, 101L));
+    }
+
+    // ----------- deleteOrderDetails Tests ------------
+
+    @Test
+    void testDeleteOrderDetails_Success() {
+        doNothing().when(paymentService).deleteByPaymentId(anyLong());
+
+        ResponseEntity<String> response = paymentController.deleteOrderDetails(1L);
+
+        assertEquals("deleted data", response.getBody());
+    }
+
+    @Test
+    void testDeleteOrderDetails_Failure() {
+        doThrow(new IllegalArgumentException("Payment not found"))
+                .when(paymentService).deleteByPaymentId(anyLong());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> paymentController.deleteOrderDetails(1L));
+    }
+
+    @Test
+    void testDeleteOrderDetails_Exception() {
+        doThrow(new RuntimeException("Unexpected error"))
+                .when(paymentService).deleteByPaymentId(anyLong());
+
+        assertThrows(RuntimeException.class,
+                () -> paymentController.deleteOrderDetails(1L));
+    }
+
+    // ----------- getPaymentByOrderId Tests ------------
+
+    @Test
+    void testGetPaymentByOrderId_Success() {
+        when(paymentService.getPaymentByOrderId(anyLong()))
+                .thenReturn(paymentEntity);
+
+        ResponseEntity<PaymentEntity> response = paymentController.getPaymentByOrderId(101L);
+
+        assertEquals(101L, response.getBody().getOrderId());
+    }
+
+    @Test
+    void testGetPaymentByOrderId_Failure() {
+        when(paymentService.getPaymentByOrderId(anyLong()))
+                .thenReturn(null);
+
+        ResponseEntity<PaymentEntity> response = paymentController.getPaymentByOrderId(101L);
+
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void testGetPaymentByOrderId_Exception() {
+        when(paymentService.getPaymentByOrderId(anyLong()))
+                .thenThrow(new RuntimeException("Database failure"));
+
+        assertThrows(RuntimeException.class,
+                () -> paymentController.getPaymentByOrderId(101L));
     }
 }
