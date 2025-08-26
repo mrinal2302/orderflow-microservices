@@ -108,7 +108,6 @@ class NotificationControllerTest {
     @Test
     @DisplayName("Validation failure -> HTTP 400")
     void notifySaveOrderStatus_validationFailure_returnsBadRequest() throws Exception {
-        // Invalid payload: blank orderId, invalid email, blank status
         String payload = """
         {
             "orderId": "",

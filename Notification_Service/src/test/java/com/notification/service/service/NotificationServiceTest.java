@@ -39,7 +39,7 @@ class NotificationServiceTest {
         notificationService.lowInventoryThreshold = 5;
     }
 
-    /* ✅ SUCCESS SCENARIO */
+
     @Test
     void testNotifyUser_SuccessScenario() {
         // Arrange
@@ -59,16 +59,14 @@ class NotificationServiceTest {
         when(notificationRepository.save(any(OrderNotification.class))).thenReturn(savedNotification);
         when(inventoryClient.getInventoryByProductId(productID)).thenReturn(new InventoryResponse(productID, 3)); // simulate low stock
 
-        // Act
         NotificationResponse response = notificationService.notifyUserBasedOnOrderStatus(recipient, orderId, status, productID, quantity);
 
-        // Assert
         assertNotNull(response);
         assertEquals("SUCCESS", response.getStatus());
         assertEquals(orderId, response.getOrderId());
     }
 
-    /* ✅ NOT SUCCESS SCENARIO (payment failed) */
+
     @Test
     void testNotifyUser_FailedScenario() {
         // Arrange
@@ -87,16 +85,13 @@ class NotificationServiceTest {
 
         when(notificationRepository.save(any(OrderNotification.class))).thenReturn(savedNotification);
 
-        // Act
         NotificationResponse response = notificationService.notifyUserBasedOnOrderStatus(recipient, orderId, status, productID, quantity);
 
-        // Assert
         assertNotNull(response);
         assertEquals("FAILED", response.getStatus());
         assertEquals(orderId, response.getOrderId());
     }
 
-    /* ✅ EXCEPTION SCENARIO (Email sending failure) */
     @Test
     void testNotifyUser_ExceptionWhileSendingEmail() {
         // Arrange
@@ -106,11 +101,9 @@ class NotificationServiceTest {
         String productID = "abc123";
         int quantity = 10;
 
-        // Simulate exception during mail sending
         doThrow(new RuntimeException("SMTP server not available"))
                 .when(javaMailSender).send(any(SimpleMailMessage.class));
 
-        // Assert
         NotificationException exception = assertThrows(NotificationException.class, () -> {
             notificationService.notifyUserBasedOnOrderStatus(recipient, orderId, status, productID, quantity);
         });

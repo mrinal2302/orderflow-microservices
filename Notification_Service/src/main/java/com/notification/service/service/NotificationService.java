@@ -85,7 +85,6 @@ public class NotificationService {
                 }
             } catch (Exception ex) {
                 log.error("Error while fetching inventory or sending admin email: ", ex);
-                // Not throwing; user notification should not fail due to inventory issues
             }
         }
 
