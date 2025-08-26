@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OrderNotification {
     @Id
-    private String messageId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long messageId;
     private String orderId;
     private String recipientEmail;
     private String message;

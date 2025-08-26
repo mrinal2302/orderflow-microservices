@@ -9,9 +9,30 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: komal7870sharma@gmail.com
+    password: cxid thjh ugfz lidy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   port: 9094
 
+inventory:
+  low:
+    threshold: 10
+
+admin:
+  email: mrinalbca.coc@email.com
+
 notification:
   orderId: "ORDER_123"
+
+
+
