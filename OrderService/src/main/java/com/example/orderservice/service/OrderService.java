@@ -11,7 +11,6 @@ public interface OrderService {
     List<Map<String, Object>> getAllTheOrders();
     Map<String, Object> getOrderById(long id);
 
-    //public PaymentRequest getOrderDetailsForPayment(long orderId);
     String sendOrderForPayment(Long orderId);
 
 }
