@@ -28,11 +28,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)   // ✅ Enable Mockito with JUnit 5
+@ExtendWith(MockitoExtension.class)
 class PaymentServiceImplTest {
 
     @InjectMocks
-    private PaymentServiceImpl paymentService;  // ✅ Mocks get injected automatically
+    private PaymentServiceImpl paymentService;
 
     @Mock
     private PaymentRepository paymentRepository;
@@ -67,7 +67,7 @@ class PaymentServiceImplTest {
         orderResponse.setQuantityOrdered(1);
     }
 
-    // ================= processPaymentFromOrder =================
+
 
     @Test
     void testProcessPaymentFromOrder_Success() {
@@ -119,7 +119,7 @@ class PaymentServiceImplTest {
         assertEquals(PaymentStatus.FAILED, lastSaved.getPaymentStatus());
     }
 
-    // ================= updatePaymentDetails =================
+
 
     @Test
     void testUpdatePaymentDetails_Success() {
@@ -150,7 +150,7 @@ class PaymentServiceImplTest {
                 () -> paymentService.updatePaymentDetails(paymentEntity, 101L));
     }
 
-    // ================= getAllPaymentDetails =================
+
 
     @Test
     void testGetAllPaymentDetails_Success() {
@@ -170,7 +170,7 @@ class PaymentServiceImplTest {
         assertTrue(payments.isEmpty());
     }
 
-    // ================= deleteByPaymentId =================
+
 
     @Test
     void testDeleteByPaymentId_Success() {
@@ -189,7 +189,7 @@ class PaymentServiceImplTest {
         assertThrows(PaymentNotFound.class, () -> paymentService.deleteByPaymentId(1L));
     }
 
-    // ================= getPaymentByOrderId =================
+
 
     @Test
     void testGetPaymentByOrderId_Success() {

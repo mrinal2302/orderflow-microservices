@@ -77,7 +77,6 @@ public class PaymentServiceImpl implements PaymentService {
             log.error("Error during payment processing for orderId: {}. Rolling back payment status.", payment.getOrderId(), e);
             payment.setPaymentStatus(PaymentStatus.FAILED);
             paymentRepository.save(payment);
-            // Re-throw a more specific exception to be handled by the controller advice
             if (e instanceof IllegalArgumentException) {
                 throw (IllegalArgumentException) e;
             }

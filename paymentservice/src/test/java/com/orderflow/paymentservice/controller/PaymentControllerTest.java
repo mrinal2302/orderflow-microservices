@@ -35,26 +35,26 @@ class PaymentControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // PaymentEntity dummy
+
         paymentEntity = PaymentEntity.builder()
                 .paymentId(1L)
                 .orderId(101L)
                 .amount(500.0)
-                .paymentMethod(PaymentMethod.CREDIT_CARD)  // ✅ must match your enum
-                .paymentStatus(PaymentStatus.SUCCESS)      // ✅ must match your enum
-                .emailAddress("test@example.com")
+                .paymentMethod(PaymentMethod.CREDIT_CARD)
+                .paymentStatus(PaymentStatus.SUCCESS)
+                .emailAddress("test@example.com")enum
                 .build();
 
-        // OrderResponse dummy (for processPayment)
+
         orderResponse = new OrderResponse();
         orderResponse.setOrderId(101L);
         orderResponse.setAmount(500.0);
         orderResponse.setPaymentMode("UPI");
         orderResponse.setEmail("test@example.com");
-        //orderResponse.setEmailAddress("test@example.com");
+
     }
 
-    // ----------- processPayment Tests ------------
+
 
     @Test
     void testProcessPayment_Success() {
@@ -87,7 +87,7 @@ class PaymentControllerTest {
                 () -> paymentController.processPayment(orderResponse));
     }
 
-    // ----------- getAllPayments Tests ------------
+
 
     @Test
     void testGetAllPayments_Success() {
@@ -118,7 +118,7 @@ class PaymentControllerTest {
                 () -> paymentController.getAllPayments());
     }
 
-    // ----------- updateByOrderId Tests ------------
+
 
     @Test
     void testUpdateByOrderId_Success() {
@@ -150,7 +150,7 @@ class PaymentControllerTest {
                 () -> paymentController.updateByOrderId(paymentEntity, 101L));
     }
 
-    // ----------- deleteOrderDetails Tests ------------
+
 
     @Test
     void testDeleteOrderDetails_Success() {
@@ -179,7 +179,7 @@ class PaymentControllerTest {
                 () -> paymentController.deleteOrderDetails(1L));
     }
 
-    // ----------- getPaymentByOrderId Tests ------------
+
 
     @Test
     void testGetPaymentByOrderId_Success() {
