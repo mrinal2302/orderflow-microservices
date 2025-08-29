@@ -11,7 +11,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>OrderMS</module>
+        <module>Notification_Service</module>
+        <module>OrderService</module>
+        <module>api_gateway</module>
+        <module>paymentservice</module>
+
     </modules>
 
 </project>
