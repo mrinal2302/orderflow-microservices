@@ -1,13 +1,7 @@
 spring:
   application:
     name: api-gateway
-    # here we are using static security checking i.e hardcode values
-    # by default it uses form based login
-    # we can chage it to basic auth which will pop up at the time when we hit the url
-    # security:
-    #  user:
-    #   name: admin
-    #  password: password
+
 
   cloud:
     gateway:
