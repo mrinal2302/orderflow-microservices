@@ -10,7 +10,6 @@ public interface OrderService {
     String savedOrder(OrderEntity orderEntity);
     List<Map<String, Object>> getAllTheOrders();
     Map<String, Object> getOrderById(long id);
-
     String sendOrderForPayment(Long orderId);
 
 }

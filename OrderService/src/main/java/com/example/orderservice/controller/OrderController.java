@@ -43,9 +43,5 @@ public class OrderController {
         String paymentResponse = orderServiceImp.sendOrderForPayment(orderId);
         return ResponseEntity.ok(paymentResponse);
     }
-/*
-    @GetMapping("/{id}/payment-details")
-    public PaymentRequest getOrderDetailsForPayment(@PathVariable long id) {
-        return orderServiceImp.getOrderDetailsForPayment(id);
-    }*/
+
 }
