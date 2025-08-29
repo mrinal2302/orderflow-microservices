@@ -3,6 +3,7 @@ package com.inventryService.service;
 import com.inventryService.entity.InventoryEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InventoryService {
 
@@ -19,7 +20,11 @@ public interface InventoryService {
 
     List<InventoryEntity> findByProductNameStartingWithIgnoringCase(String productName);
 
+    Optional<InventoryEntity> inventorySuccessById(Long id);
 
+    Optional<InventoryEntity> wentOutOfStock(Long id);
+
+    String sendById(Long id);
 }
 
 
