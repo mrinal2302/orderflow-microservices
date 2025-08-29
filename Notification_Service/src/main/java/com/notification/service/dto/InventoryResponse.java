@@ -2,14 +2,17 @@ package com.notification.service.dto;
 
 public class InventoryResponse {
 
-
-    private int productId;
+    private long productId;
     private int availableStock ;
 
-    public InventoryResponse(String productID, int i) {
+    public InventoryResponse(long productID, int i) {
     }
 
-    public int getProductId() {
+    public InventoryResponse() {
+
+    }
+
+    public long getProductId() {
         return productId;
     }
 

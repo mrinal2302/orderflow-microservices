@@ -14,11 +14,11 @@ public class NotificationRequest {
     @NotBlank(message = "Order status is required")
     private String status;
 
-    private String productId;
+    private long productId;
 
     private int quantity ;
 
-    public NotificationRequest(String orderId, String recipient, String status, String productId, int quantity) {
+    public NotificationRequest(String orderId, String recipient, String status, long productId, int quantity) {
         this.orderId = orderId;
         this.recipient = recipient;
         this.status = status;
@@ -56,11 +56,11 @@ public class NotificationRequest {
         this.status = status;
     }
 
-    public String getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 

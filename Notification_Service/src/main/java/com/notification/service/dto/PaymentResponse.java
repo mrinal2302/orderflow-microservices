@@ -1,12 +1,11 @@
 package com.notification.service.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class NotificationResponse {
+public class PaymentResponse {
 
     private String status;
     private String sentAt;
@@ -14,7 +13,7 @@ public class NotificationResponse {
     private String orderId;
     private String message;
 
-    public NotificationResponse(String status, String sentAt, long messageId, String orderId, String message) {
+    public PaymentResponse(String status, String sentAt, long messageId, String orderId, String message) {
         this.status = status;
         this.sentAt = sentAt;
         this.messageId = messageId;

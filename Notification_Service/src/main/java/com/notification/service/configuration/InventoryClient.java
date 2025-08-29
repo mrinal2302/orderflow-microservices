@@ -11,5 +11,5 @@ public interface InventoryClient {
 
     @GetMapping("/inventory/{productId}")
 
-    InventoryResponse getInventoryByProductId(@PathVariable("productId") String productId);
+    InventoryResponse getInventoryByProductId(@PathVariable("productId") Long productId);
 }

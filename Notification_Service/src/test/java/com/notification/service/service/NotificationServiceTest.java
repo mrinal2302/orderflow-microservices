@@ -3,20 +3,23 @@ package com.notification.service.service;
 import com.notification.service.Exception.NotificationException;
 import com.notification.service.configuration.InventoryClient;
 import com.notification.service.dto.InventoryResponse;
-import com.notification.service.dto.NotificationResponse;
+import com.notification.service.dto.PaymentResponse;
 import com.notification.service.entity.OrderNotification;
 import com.notification.service.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-
+import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class NotificationServiceTest {
 
     @InjectMocks
@@ -33,81 +36,123 @@ class NotificationServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        notificationService.fromEmail = "test@company.com";
-        notificationService.adminEmail = "admin@example.com";
-        notificationService.lowInventoryThreshold = 5;
+        ReflectionTestUtils.setField(notificationService, "lowInventoryThreshold", 5);
+        ReflectionTestUtils.setField(notificationService, "adminEmail", "admin@example.com");
+        ReflectionTestUtils.setField(notificationService, "fromEmail", "noreply@example.com");
     }
 
-
     @Test
-    void testNotifyUser_SuccessScenario() {
-        // Arrange
-        String recipient = "customer@example.com";
+    void notifyUserBasedOnOrderStatus_success() throws Exception {
+        // Given
         String orderId = "ORD123";
+        String recipient = "user@example.com";
         String status = "SUCCESS";
-        String productID = "abc123";
-        int quantity = 10;
+        long productId = 101L;
+        int quantity = 2;
 
         OrderNotification savedNotification = new OrderNotification();
         savedNotification.setOrderId(orderId);
         savedNotification.setRecipientEmail(recipient);
         savedNotification.setStatus(status);
         savedNotification.setSentAt(LocalDateTime.now());
-        savedNotification.setMessageId(1L);
+        savedNotification.setMessage("Success message");
+        savedNotification.setMessageId(123L);
 
-        when(notificationRepository.save(any(OrderNotification.class))).thenReturn(savedNotification);
-        when(inventoryClient.getInventoryByProductId(productID)).thenReturn(new InventoryResponse(productID, 3)); // simulate low stock
+        Mockito.when(notificationRepository.save(Mockito.any(OrderNotification.class)))
+                .thenReturn(savedNotification);
 
-        NotificationResponse response = notificationService.notifyUserBasedOnOrderStatus(recipient, orderId, status, productID, quantity);
+        // When
+        PaymentResponse response = notificationService.notifyUserBasedOnOrderStatus(
+                recipient, orderId, status, productId, quantity);
 
-        assertNotNull(response);
+        // Then
         assertEquals("SUCCESS", response.getStatus());
         assertEquals(orderId, response.getOrderId());
+        assertNotNull(response.getSentAt());
+        assertTrue(response.getMessage().contains("processed successfully"));
     }
 
-
     @Test
-    void testNotifyUser_FailedScenario() {
-        // Arrange
-        String recipient = "customer@example.com";
+    void notifyUserBasedOnOrderStatus_failedPayment() throws Exception {
+        // Given
         String orderId = "ORD456";
+        String recipient = "user@example.com";
         String status = "FAILED";
-        String productID = "abc123";
-        int quantity = 10;
+        long productId = 101L;
+        int quantity = 2;
 
         OrderNotification savedNotification = new OrderNotification();
         savedNotification.setOrderId(orderId);
         savedNotification.setRecipientEmail(recipient);
         savedNotification.setStatus(status);
         savedNotification.setSentAt(LocalDateTime.now());
-        savedNotification.setMessageId(2L);
+        savedNotification.setMessage("Payment failed message");
+        savedNotification.setMessageId(123L);
 
-        when(notificationRepository.save(any(OrderNotification.class))).thenReturn(savedNotification);
+        Mockito.when(notificationRepository.save(Mockito.any(OrderNotification.class)))
+                .thenReturn(savedNotification);
 
-        NotificationResponse response = notificationService.notifyUserBasedOnOrderStatus(recipient, orderId, status, productID, quantity);
+        // When
+        PaymentResponse response = notificationService.notifyUserBasedOnOrderStatus(
+                recipient, orderId, status, productId, quantity);
 
-        assertNotNull(response);
+        // Then
         assertEquals("FAILED", response.getStatus());
-        assertEquals(orderId, response.getOrderId());
+        assertTrue(response.getMessage().contains("payment failed"));
     }
 
     @Test
-    void testNotifyUser_ExceptionWhileSendingEmail() {
-        // Arrange
-        String recipient = "customer@example.com";
+    void notifyUserBasedOnOrderStatus_emailException() {
+        // Given
         String orderId = "ORD789";
+        String recipient = "user@example.com";
         String status = "SUCCESS";
-        String productID = "abc123";
-        int quantity = 10;
+        long productId = 101L;
+        int quantity = 2;
 
-        doThrow(new RuntimeException("SMTP server not available"))
-                .when(javaMailSender).send(any(SimpleMailMessage.class));
+        // Simulate email send failure
+        Mockito.doThrow(new RuntimeException("SMTP Error"))
+                .when(javaMailSender).send(Mockito.any(SimpleMailMessage.class));
 
-        NotificationException exception = assertThrows(NotificationException.class, () -> {
-            notificationService.notifyUserBasedOnOrderStatus(recipient, orderId, status, productID, quantity);
+        // Then
+        assertThrows(NotificationException.class, () -> {
+            notificationService.notifyUserBasedOnOrderStatus(recipient, orderId, status, productId, quantity);
         });
+    }
 
-        assertEquals("Failed to send Email", exception.getMessage());
+    @Test
+    void getStockAvailability_lowStock_sendsAlert() {
+        // Given
+        long productId = 100L;
+        InventoryResponse inventoryResponse = new InventoryResponse();
+        inventoryResponse.setAvailableStock(2);  // Threshold is 5
+
+        Mockito.when(inventoryClient.getInventoryByProductId(productId))
+                .thenReturn(inventoryResponse);
+
+        // When
+        String result = notificationService.getStockAvailability(productId);
+
+        // Then
+        assertEquals("Stock is sufficient. No alert needed.", result);
+        Mockito.verify(javaMailSender, Mockito.times(1)).send(Mockito.any(SimpleMailMessage.class));
+    }
+
+    @Test
+    void getStockAvailability_sufficientStock_noAlert() {
+        // Given
+        long productId = 101L;
+        InventoryResponse inventoryResponse = new InventoryResponse();
+        inventoryResponse.setAvailableStock(10);  // Above threshold
+
+        Mockito.when(inventoryClient.getInventoryByProductId(productId))
+                .thenReturn(inventoryResponse);
+
+        // When
+        String result = notificationService.getStockAvailability(productId);
+
+        // Then
+        assertEquals("Stock is sufficient. No alert needed.", result);
+        Mockito.verify(javaMailSender, Mockito.never()).send(Mockito.any(SimpleMailMessage.class));
     }
 }
