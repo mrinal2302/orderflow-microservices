@@ -79,6 +79,7 @@ public class NotificationService {
            String subject = "Low Stock Alert for Product " + productId;;
            String message= "Product ID " + productId + " has low stock. Current stock: " + response.getAvailableStock();
            sendEmail(adminEmail, subject, message);
+           return "Low stock alert sent. Current stock: " + response.getAvailableStock();
        }
         return "Stock is sufficient. No alert needed.";
     }
