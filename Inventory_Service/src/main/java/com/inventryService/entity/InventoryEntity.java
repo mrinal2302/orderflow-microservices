@@ -12,8 +12,6 @@ public class InventoryEntity {
     private Double price;
     private String description;
 
-
-
     public InventoryEntity(Long productId, String productName, int availableQuantity, Double price,String description) {
         this.productId = productId;
         this.productName = productName;
