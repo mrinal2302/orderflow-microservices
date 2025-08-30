@@ -1,9 +1,15 @@
+server:
+  port: 9090
+
 spring:
+  application:
+    name: inventory-service
   datasource:
     url: jdbc:mysql://localhost:3306/inventory_base
     username: root
     password: vishal
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,5 +17,3 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
-server:
-  port: 9093

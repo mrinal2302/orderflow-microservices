@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/inventory")
@@ -17,25 +18,25 @@ public class InventoryController {
     private InventoryService inventoryService;
 
     @PostMapping("/post_save")
-    private ResponseEntity<InventoryEntity> getValueSaveIn(@RequestBody InventoryEntity entity) {
+    public ResponseEntity<InventoryEntity> getValueSaveIn(@RequestBody InventoryEntity entity) {
         InventoryEntity inventory = inventoryService.getValueSaveIn(entity);
         return ResponseEntity.status(HttpStatus.OK).body(inventory);
     }
 
     @GetMapping("/get_inventory/{id}")
-    private ResponseEntity<InventoryEntity> getInventoryById(@PathVariable Long id) {
+    public ResponseEntity<InventoryEntity> getInventoryById(@PathVariable Long id) {
         InventoryEntity inventoryEntity = inventoryService.getInventoryById(id);
         return ResponseEntity.status(HttpStatus.FOUND).body(inventoryEntity);
     }
 
     @GetMapping("/getAll")
-    private ResponseEntity<List<InventoryEntity>> getAllinventoryId() {
+    public ResponseEntity<List<InventoryEntity>> getAllinventoryId() {
         List<InventoryEntity> inventoryEntities = inventoryService.getAllinventoryId();
         return ResponseEntity.status(HttpStatus.OK).body(inventoryEntities);
     }
 
     @PutMapping("/upateinventory/{id}")
-    private ResponseEntity<InventoryEntity> updateInventoryById(@PathVariable Long id, @RequestBody InventoryEntity entity) {
+    public ResponseEntity<InventoryEntity> updateInventoryById(@PathVariable Long id, @RequestBody InventoryEntity entity) {
         InventoryEntity inventoryEntities = inventoryService.updateInventoryById(id, entity);
         return ResponseEntity.status(HttpStatus.OK).body(inventoryEntities);
     }
@@ -46,10 +47,31 @@ public class InventoryController {
     }
 
     @GetMapping("/getinventoryByProductName/{productName}")
-    private ResponseEntity<List<InventoryEntity>> findByProductNameStartingWithIgnoringCase(@PathVariable String productName) {
+    public ResponseEntity<List<InventoryEntity>> findByProductNameStartingWithIgnoringCase(@PathVariable String productName) {
         List<InventoryEntity> inventoryEntities = inventoryService.findByProductNameStartingWithIgnoringCase(productName);
         return ResponseEntity.status(HttpStatus.FOUND).body(inventoryEntities);
     }
 
+    @PutMapping("/inventory_successfully/{id}")
+    public ResponseEntity<Optional<InventoryEntity>> inventorySuccessById(@PathVariable Long id, @RequestBody InventoryEntity entity) {
+        Optional<InventoryEntity> inventory = inventoryService.inventorySuccessById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(inventory);
+    }
 
+
+    @PutMapping("/outOfStock")
+    public ResponseEntity<Optional<InventoryEntity>> wentOutOfStock(@PathVariable Long id) {
+        Optional<InventoryEntity> inventoryEntity = inventoryService.wentOutOfStock(id);
+        return ResponseEntity.status(HttpStatus.OK).body(inventoryEntity);
+
+    }
+
+    @PutMapping("/sendingId")
+    public ResponseEntity<String> sendById(@PathVariable Long id) {
+        String response = inventoryService.sendById(id);
+        return ResponseEntity.ok(response);
+    }
 }
+
+
+
