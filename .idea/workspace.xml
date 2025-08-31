@@ -4,33 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4641ad73-4257-45e3-bc46-8b94631ecd11" name="Changes" comment="Changes done for OrderService Setup">
-
+    <list default="true" id="37d8a275-75fb-4b68-88fa-72507dd4179e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/Exception/DataInsufficientException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/Exception/ErrorResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/Exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/Exception/NotificationException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/configuration/InventoryClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/dto/InventoryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification_Service/src/test/java/com/notification/service/controller/NotificationControllerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/HELP.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/src/main/java/com/os/order/OrderMsApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/src/test/java/com/os/order/OrderMsApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/target/classes/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderMS/target/classes/com/os/order/OrderMsApplication.class" beforeDir="false" />
-
+      <change beforePath="$PROJECT_DIR$/Notification_Service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/NotificationServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/NotificationServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/controller/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/dto/NotificationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/dto/NotificationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/dto/NotificationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/dto/NotificationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/entity/OrderNotification.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/entity/OrderNotification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/repository/NotificationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/repository/NotificationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/java/com/notification/service/service/NotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification_Service/src/test/java/com/notification/service/service/NotificationServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Notification_Service/src/test/java/com/notification/service/service/NotificationServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit5 Test Class" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="OFS-S1Notification" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,46 +53,64 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;mrinal2302&quot;
+    &quot;assignee&quot;: &quot;SharmaKomal15&quot;
   }
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/mrinal2302/orderflow-microservices.git&quot;,
-    &quot;accountId&quot;: &quot;00906ee5-995b-4230-850c-b8d6a5034ec1&quot;
+    &quot;accountId&quot;: &quot;6b6c6455-a9cd-4feb-bc05-bd8ba338c71c&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
+  &quot;associatedIndex&quot;: 4
 }</component>
-  <component name="ProjectId" id="30GpqVLvjoIvHkGZvEjf6RhHxlN" />
+  <component name="ProjectId" id="31BswU9JHsQn8njUXoLJOI9efpV" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.OrderMsApplication.executor": "Run",
+    "Application.NotificationServiceApplication.executor": "Coverage",
+    "JUnit.NotificationControllerTest.executor": "Run",
+    "JUnit.NotificationControllerTest.notifySaveOrderStatus_invalidRequest_returnsBadRequest.executor": "Run",
+    "JUnit.NotificationControllerTest.notifySaveOrderStatus_notSuccess_returnsCreated.executor": "Run",
+    "JUnit.NotificationControllerTest.notifySaveOrderStatus_success_returnsCreated.executor": "Run",
+    "JUnit.NotificationControllerTest.notifySaveOrderStatus_validationFailure_returnsBadRequest.executor": "Run",
+    "JUnit.NotificationServiceApplicationTests.executor": "Coverage",
+    "JUnit.NotificationServiceTest.executor": "Run",
+    "JUnit.NotificationServiceTest.testCreateNotification_Success.executor": "Run",
+    "JUnit.NotificationServiceTest.testNotifyUser_ExceptionWhileSendingEmail.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging OFS-S1Notification",
-    "last_opened_file_path": "C:/Coding/orderflow-microservices"
-
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "OFS-S2Notification"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Coding\orderflow-microservices" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.notification.service.Exception" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.notification.service.controller" />
+      <recent name="com.notification.service.service" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.notification.service.Exception" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="OrderMsApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.os.order.OrderMsApplication" />
-      <module name="OrderMS" />
+  <component name="RunManager" selected="JUnit.NotificationServiceTest.testNotifyUser_ExceptionWhileSendingEmail">
+    <configuration name="NotificationServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.notification.service.NotificationServiceApplication" />
+      <module name="Notification_Service" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.os.order.*" />
+          <option name="PATTERN" value="com.notification.service.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -85,64 +118,103 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="NotificationControllerTest.notifySaveOrderStatus_validationFailure_returnsBadRequest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Notification_Service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.notification.service.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.notification.service.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.notification.service.controller.NotificationControllerTest" />
+      <option name="METHOD_NAME" value="notifySaveOrderStatus_validationFailure_returnsBadRequest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationServiceApplicationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Notification_Service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.notification.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.notification.service" />
+      <option name="MAIN_CLASS_NAME" value="com.notification.service.NotificationServiceApplicationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Notification_Service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.notification.service.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.notification.service.service" />
+      <option name="MAIN_CLASS_NAME" value="com.notification.service.service.NotificationServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationServiceTest.testNotifyUser_ExceptionWhileSendingEmail" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Notification_Service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.notification.service.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.notification.service.service" />
+      <option name="MAIN_CLASS_NAME" value="com.notification.service.service.NotificationServiceTest" />
+      <option name="METHOD_NAME" value="testNotifyUser_ExceptionWhileSendingEmail" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.OrderMsApplication" />
-        <item itemvalue="Application.OrderMsApplication" />
+        <item itemvalue="JUnit.NotificationServiceTest.testNotifyUser_ExceptionWhileSendingEmail" />
+        <item itemvalue="JUnit.NotificationServiceTest" />
+        <item itemvalue="JUnit.NotificationServiceApplicationTests" />
+        <item itemvalue="Application.NotificationServiceApplication" />
+        <item itemvalue="JUnit.NotificationControllerTest.notifySaveOrderStatus_validationFailure_returnsBadRequest" />
       </list>
     </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="4641ad73-4257-45e3-bc46-8b94631ecd11" name="Changes" comment="" />
-      <created>1753263954350</created>
+      <changelist id="37d8a275-75fb-4b68-88fa-72507dd4179e" name="Changes" comment="" />
+      <created>1755009040722</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1753263954350</updated>
+      <updated>1755009040722</updated>
     </task>
-    <task id="LOCAL-00001" summary="Changes done for OrderService Setup">
-      <option name="closed" value="true" />
-      <created>1753266078870</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1753266078870</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Changes done for OrderService Setup">
-      <option name="closed" value="true" />
-      <created>1753274393501</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1753274393501</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Changes done for OrderService Setup">
-      <option name="closed" value="true" />
-      <created>1753275960050</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1753275960050</updated>
-    </task>
-    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Initial commit" />
-    <MESSAGE value="Changes done for OrderService Setup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes done for OrderService Setup" />
-    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
-    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/orderflow_microservice$NotificationServiceApplicationTests.ic" NAME="NotificationServiceApplicationTests Coverage Results" MODIFIED="1756209504664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.notification.service.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/orderflow_microservice$NotificationServiceApplication.ic" NAME="NotificationServiceApplication Coverage Results" MODIFIED="1756209237316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.notification.service.*</FILTER>
+    </SUITE>
   </component>
 </project>
