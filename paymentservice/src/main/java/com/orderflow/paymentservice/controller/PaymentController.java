@@ -34,13 +34,6 @@ public class PaymentController {
         PaymentEntity paymentUpdate = paymentService.updatePaymentDetails(entity, orderId);
         return new ResponseEntity<>(paymentUpdate, HttpStatus.OK);
     }
-
-    @DeleteMapping("/deleteByPaymentId/{PaymentId}")
-    public ResponseEntity<String> deleteOrderDetails(@PathVariable Long PaymentId) {
-        paymentService.deleteByPaymentId(PaymentId);
-        return ResponseEntity.ok("deleted data");
-    }
-
     @GetMapping("/getPaymentByOrderId/{orderId}")
     public ResponseEntity<PaymentEntity> getPaymentByOrderId(@PathVariable Long orderId) {
         return ResponseEntity.ok(paymentService.getPaymentByOrderId(orderId));

@@ -10,11 +10,9 @@ import com.orderflow.paymentservice.exceptionHandler.OrderIdNotFoundException;
 import com.orderflow.paymentservice.exceptionHandler.PaymentNotFound;
 import com.orderflow.paymentservice.exceptionHandler.PaymentUpdateException;
 import com.orderflow.paymentservice.exceptionHandler.ServiceCommunicationException;
-import com.orderflow.paymentservice.model.PaymentMethod;
 import com.orderflow.paymentservice.model.PaymentStatus;
 import com.orderflow.paymentservice.repository.PaymentRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,59 +26,85 @@ public class PaymentServiceImpl implements PaymentService {
     private final InventoryServiceClient inventoryServiceClient;
     private final NotificationServiceClient notificationServiceClient;
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository, InventoryServiceClient inventoryServiceClient, NotificationServiceClient notificationServiceClient) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, 
+                            InventoryServiceClient inventoryServiceClient, 
+                            NotificationServiceClient notificationServiceClient) {
         this.paymentRepository = paymentRepository;
         this.inventoryServiceClient = inventoryServiceClient;
         this.notificationServiceClient = notificationServiceClient;
     }
 
+    private PaymentEntity createAndSavePayment(OrderResponse orderResponse) {
+        try {
+            PaymentEntity payment = new PaymentEntity();
+            payment.setOrderId(orderResponse.getOrderId());
+            payment.setAmount(orderResponse.getAmount());
+            payment.setPaymentMethod(orderResponse.getPaymentMethod());
+            payment.setPaymentStatus(PaymentStatus.PENDING);
+            payment.setEmailAddress(orderResponse.getEmail());
+            return paymentRepository.save(payment);
+        } catch (Exception e) {
+            throw new PaymentNotFound("Failed to create payment: " + e.getMessage());
+        }
+    }
+
+    private void updateInventory(OrderResponse orderResponse) {
+        try {
+            InventoryRequest inventoryRequest = InventoryRequest.builder()
+                .orderId(orderResponse.getOrderId())
+                .productId(orderResponse.getProductId())
+                .productName(orderResponse.getProductName())
+                .quantityOrdered(orderResponse.getQuantityOrdered())
+                .paymentStatus(PaymentStatus.SUCCESS.name())
+                .build();
+        log.info("Calling inventory service for orderId: {}", orderResponse.getOrderId());
+        inventoryServiceClient.inventoryUpdate(inventoryRequest);
+        log.info("Inventory service call successful for orderId: {}", orderResponse.getOrderId());
+        }catch (Exception e) {
+            throw new ServiceCommunicationException("Failed to update inventory: " + e.getMessage());
+        }
+    }
+
+    
+    private void sendNotification(OrderResponse orderResponse, PaymentEntity payment) {
+        try {
+            NotificationRequest notificationRequest = NotificationRequest.builder()
+                .orderId(orderResponse.getOrderId())
+                .email(orderResponse.getEmail())
+                .paymentStatus(PaymentStatus.SUCCESS.name())
+                .amount(payment.getAmount())
+                .productId(orderResponse.getProductId())
+                .build();
+        log.info("Calling notification service for orderId: {}", orderResponse.getOrderId());
+        notificationServiceClient.sendNotification(notificationRequest);
+        log.info("Notification service call successful for orderId: {}", orderResponse.getOrderId());
+        }catch (Exception e) {
+            throw new ServiceCommunicationException("Failed to send notification: " + e.getMessage());
+        }
+    }
+
     @Override
     @Transactional
     public String processPaymentFromOrder(OrderResponse orderResponse) {
-        PaymentEntity payment = new PaymentEntity();
-        payment.setOrderId(orderResponse.getOrderId());
-        payment.setAmount(orderResponse.getAmount());
-        payment.setPaymentMethod(PaymentMethod.valueOf(orderResponse.getPaymentMode()));
-        payment.setPaymentStatus(PaymentStatus.PENDING);
-        payment.setEmailAddress(orderResponse.getEmail());
-        paymentRepository.save(payment);
+        PaymentEntity payment = createAndSavePayment(orderResponse);
         try {
-            InventoryRequest inventoryRequest = InventoryRequest.builder()
-                    .orderId(orderResponse.getOrderId())
-                    .productId(orderResponse.getProductId())
-                    .productName(orderResponse.getProductName())
-                    .quantityOrdered(orderResponse.getQuantityOrdered())
-                    .paymentStatus(PaymentStatus.SUCCESS.name())
-                    .build();
-            log.info("Calling inventory service for orderId: {}", orderResponse.getOrderId());
-            inventoryServiceClient.inventoryUpdate(inventoryRequest);
-            log.info("Inventory service call successful for orderId: {}", orderResponse.getOrderId());
 
-            NotificationRequest notificationRequest = NotificationRequest.builder()
-                    .orderId(orderResponse.getOrderId())
-                    .email(orderResponse.getEmail())
-                    .paymentStatus(PaymentStatus.SUCCESS.name())
-                    .amount(payment.getAmount())
-                    .productId(orderResponse.getProductId())
-                    .build();
-            log.info("Calling notification service for orderId: {}", orderResponse.getOrderId());
-            notificationServiceClient.sendNotification(notificationRequest);
-            log.info("Notification service call successful for orderId: {}", orderResponse.getOrderId());
+            updateInventory(orderResponse);
 
             payment.setPaymentStatus(PaymentStatus.SUCCESS);
             paymentRepository.save(payment);
-            log.info("Payment for orderId: {} updated to status SUCCESS.", payment.getOrderId());
+            
 
-            return "Payment processed successfully";
-
+            sendNotification(orderResponse, payment);
+            
+            return "Payment processed successfully for order: " + orderResponse.getOrderId();
+            
         } catch (Exception e) {
-            log.error("Error during payment processing for orderId: {}. Rolling back payment status.", payment.getOrderId(), e);
+            log.error("Error during payment processing for orderId: {}. Updating payment status to FAILED.", 
+                    payment.getOrderId(), e);
             payment.setPaymentStatus(PaymentStatus.FAILED);
             paymentRepository.save(payment);
-            if (e instanceof IllegalArgumentException) {
-                throw (IllegalArgumentException) e;
-            }
-            throw new ServiceCommunicationException("Service communication failed, payment status updated to FAILED. Reason: " + e.getMessage());
+            throw new ServiceCommunicationException("Payment processing failed: " + e.getMessage());
         }
     }
 
@@ -104,24 +128,20 @@ public class PaymentServiceImpl implements PaymentService {
     public List<PaymentEntity> getAllPaymentDetails() {
         try {
             return paymentRepository.findAll();
-        } catch (Exception e) {
-            throw new PaymentNotFound("failed to get payment details: " + e.getMessage());
+        } catch (Exception ex) {
+            throw new PaymentNotFound("Failed to get payment details: " + ex.getMessage());
         }
     }
-
-    @Override
-    public void deleteByPaymentId(Long paymentId) {
-        PaymentEntity payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new PaymentNotFound("Payment not found for ID: " + paymentId));
-        paymentRepository.delete(payment);
-    }
-
     @Override
     public PaymentEntity getPaymentByOrderId(Long orderId) {
-        PaymentEntity payment = paymentRepository.findByOrderId(orderId);
-        if (payment == null) {
-            throw new PaymentNotFound("Payment not found for Order ID: " + orderId);
+        try {
+            PaymentEntity payment = paymentRepository.findByOrderId(orderId);
+            if (payment == null) {
+                throw new PaymentNotFound("Payment not found for Order ID: " + orderId);
+            }
+            return payment;
+        } catch (Exception ex) {
+            throw new PaymentNotFound("Error retrieving payment details: " + ex.getMessage());
         }
-        return payment;
     }
 }

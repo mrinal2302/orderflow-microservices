@@ -1,6 +1,4 @@
 package com.orderflow.paymentservice.entity;
-
-import com.orderflow.paymentservice.model.PaymentMethod;
 import com.orderflow.paymentservice.model.PaymentStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -23,9 +21,8 @@ public class PaymentEntity {
     private Long orderId;
     @NotNull(message = "amount should not be empty")
     private Double amount;
-    @Enumerated(EnumType.STRING)
     @NotNull(message = "paymentMode should not be empty")
-    private PaymentMethod paymentMethod;
+    private String paymentMethod;
     @Enumerated(EnumType.STRING)
     @NotNull(message = "paymentStatus should not be empty")
     private PaymentStatus paymentStatus;

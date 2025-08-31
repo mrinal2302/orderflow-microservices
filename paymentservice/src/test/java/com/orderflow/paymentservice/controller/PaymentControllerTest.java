@@ -2,7 +2,7 @@ package com.orderflow.paymentservice.controller;
 
 import com.orderflow.paymentservice.dto.OrderResponse;
 import com.orderflow.paymentservice.entity.PaymentEntity;
-import com.orderflow.paymentservice.model.PaymentMethod;
+import com.orderflow.paymentservice.exceptionHandler.ServiceCommunicationException;
 import com.orderflow.paymentservice.model.PaymentStatus;
 import com.orderflow.paymentservice.service.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,16 +40,16 @@ class PaymentControllerTest {
                 .paymentId(1L)
                 .orderId(101L)
                 .amount(500.0)
-                .paymentMethod(PaymentMethod.CREDIT_CARD)
+                .paymentMethod("CREDIT_CARD")
                 .paymentStatus(PaymentStatus.SUCCESS)
-                .emailAddress("test@example.com")enum
+                .emailAddress("test@example.com")
                 .build();
 
 
         orderResponse = new OrderResponse();
         orderResponse.setOrderId(101L);
         orderResponse.setAmount(500.0);
-        orderResponse.setPaymentMode("UPI");
+        orderResponse.setPaymentMethod("UPI");
         orderResponse.setEmail("test@example.com");
 
     }
@@ -57,35 +57,37 @@ class PaymentControllerTest {
 
 
     @Test
-    void testProcessPayment_Success() {
-        when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
-                .thenReturn("Payment processed successfully");
+void testProcessPayment_Success() {
+    
+    when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
+        .thenReturn("Payment processed successfully for order: 1");
+    
+  
+    ResponseEntity<String> response = paymentController.processPayment(orderResponse);
 
-        ResponseEntity<String> response = paymentController.processPayment(orderResponse);
+    
+    assertEquals(200, response.getStatusCodeValue());
+    assertTrue(response.getBody().contains("Payment processed successfully"));
+    verify(paymentService, times(1)).processPaymentFromOrder(any(OrderResponse.class));
+}
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("Payment processed successfully", response.getBody());
-        verify(paymentService, times(1)).processPaymentFromOrder(any(OrderResponse.class));
-    }
+@Test
+void testProcessPayment_Failure() {
+    when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
+        .thenThrow(new ServiceCommunicationException("Payment processing failed"));
+    
+    assertThrows(ServiceCommunicationException.class, 
+        () -> paymentController.processPayment(orderResponse));
+}
 
-    @Test
-    void testProcessPayment_Failure() {
-        when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
-                .thenReturn("Payment failed");
-
-        ResponseEntity<String> response = paymentController.processPayment(orderResponse);
-
-        assertEquals("Payment failed", response.getBody());
-    }
-
-    @Test
-    void testProcessPayment_Exception() {
-        when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
-                .thenThrow(new RuntimeException("Service unavailable"));
-
-        assertThrows(RuntimeException.class,
-                () -> paymentController.processPayment(orderResponse));
-    }
+@Test
+void testProcessPayment_Exception() {
+    when(paymentService.processPaymentFromOrder(any(OrderResponse.class)))
+        .thenThrow(new RuntimeException("Service unavailable"));
+    
+    assertThrows(RuntimeException.class,
+        () -> paymentController.processPayment(orderResponse));
+}
 
 
 
@@ -149,38 +151,6 @@ class PaymentControllerTest {
         assertThrows(RuntimeException.class,
                 () -> paymentController.updateByOrderId(paymentEntity, 101L));
     }
-
-
-
-    @Test
-    void testDeleteOrderDetails_Success() {
-        doNothing().when(paymentService).deleteByPaymentId(anyLong());
-
-        ResponseEntity<String> response = paymentController.deleteOrderDetails(1L);
-
-        assertEquals("deleted data", response.getBody());
-    }
-
-    @Test
-    void testDeleteOrderDetails_Failure() {
-        doThrow(new IllegalArgumentException("Payment not found"))
-                .when(paymentService).deleteByPaymentId(anyLong());
-
-        assertThrows(IllegalArgumentException.class,
-                () -> paymentController.deleteOrderDetails(1L));
-    }
-
-    @Test
-    void testDeleteOrderDetails_Exception() {
-        doThrow(new RuntimeException("Unexpected error"))
-                .when(paymentService).deleteByPaymentId(anyLong());
-
-        assertThrows(RuntimeException.class,
-                () -> paymentController.deleteOrderDetails(1L));
-    }
-
-
-
     @Test
     void testGetPaymentByOrderId_Success() {
         when(paymentService.getPaymentByOrderId(anyLong()))

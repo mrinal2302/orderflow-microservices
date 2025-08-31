@@ -7,12 +7,16 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class OrderResponse {
     @NotNull(message = "Order ID cannot be null")
     private Long orderId;
@@ -27,7 +31,7 @@ public class OrderResponse {
     private int quantityOrdered;
 
     @NotBlank(message = "Payment mode cannot be blank")
-    private String paymentMode;
+    private String paymentMethod;
 
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email should be valid")

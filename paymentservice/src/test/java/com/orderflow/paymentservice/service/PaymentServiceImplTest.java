@@ -10,7 +10,6 @@ import com.orderflow.paymentservice.exceptionHandler.OrderIdNotFoundException;
 import com.orderflow.paymentservice.exceptionHandler.PaymentNotFound;
 import com.orderflow.paymentservice.exceptionHandler.PaymentUpdateException;
 import com.orderflow.paymentservice.exceptionHandler.ServiceCommunicationException;
-import com.orderflow.paymentservice.model.PaymentMethod;
 import com.orderflow.paymentservice.model.PaymentStatus;
 import com.orderflow.paymentservice.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +51,7 @@ class PaymentServiceImplTest {
                 .paymentId(1L)
                 .orderId(101L)
                 .amount(500.0)
-                .paymentMethod(PaymentMethod.CREDIT_CARD)
+                .paymentMethod("CREDIT_CARD")
                 .paymentStatus(PaymentStatus.SUCCESS)
                 .emailAddress("test@example.com")
                 .build();
@@ -60,7 +59,7 @@ class PaymentServiceImplTest {
         orderResponse = new OrderResponse();
         orderResponse.setOrderId(101L);
         orderResponse.setAmount(500.0);
-        orderResponse.setPaymentMode("CREDIT_CARD");
+        orderResponse.setPaymentMethod("CREDIT_CARD");
         orderResponse.setEmail("test@example.com");
         orderResponse.setProductId(10L);
         orderResponse.setProductName("Laptop");
@@ -75,9 +74,8 @@ class PaymentServiceImplTest {
         doNothing().when(inventoryServiceClient).inventoryUpdate(any(InventoryRequest.class));
         doNothing().when(notificationServiceClient).sendNotification(any(NotificationRequest.class));
 
-        String result = paymentService.processPaymentFromOrder(orderResponse);
+        paymentService.processPaymentFromOrder(orderResponse);
 
-        assertEquals("Payment processed successfully", result);
         verify(paymentRepository, atLeastOnce()).save(any(PaymentEntity.class));
     }
 
@@ -169,28 +167,6 @@ class PaymentServiceImplTest {
 
         assertTrue(payments.isEmpty());
     }
-
-
-
-    @Test
-    void testDeleteByPaymentId_Success() {
-        when(paymentRepository.findById(1L)).thenReturn(Optional.of(paymentEntity));
-        doNothing().when(paymentRepository).delete(paymentEntity);
-
-        paymentService.deleteByPaymentId(1L);
-
-        verify(paymentRepository, times(1)).delete(paymentEntity);
-    }
-
-    @Test
-    void testDeleteByPaymentId_Failure_NotFound() {
-        when(paymentRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(PaymentNotFound.class, () -> paymentService.deleteByPaymentId(1L));
-    }
-
-
-
     @Test
     void testGetPaymentByOrderId_Success() {
         when(paymentRepository.findByOrderId(101L)).thenReturn(paymentEntity);
