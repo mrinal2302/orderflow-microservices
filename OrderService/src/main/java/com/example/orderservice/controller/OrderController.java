@@ -1,5 +1,6 @@
 package com.example.orderservice.controller;
 
+import com.example.orderservice.dto.PaymentRequest;
 import com.example.orderservice.entities.OrderEntity;
 import com.example.orderservice.service.OrderServiceImp;
 import jakarta.validation.Valid;
@@ -12,13 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/requestorder")
+@RequestMapping("/order")
 public class OrderController {
 
     @Autowired
     OrderServiceImp orderServiceImp;
-
-
 
     @PostMapping("/orders")
     public ResponseEntity<String> savedOrder(@Valid @RequestBody OrderEntity orderEntity) {
@@ -37,4 +36,12 @@ public class OrderController {
         Map<String, Object> order = orderServiceImp.getOrderById(id);
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
+
+    @PostMapping("/{orderId}/pay")
+    public ResponseEntity<String> payForOrder(@PathVariable Long orderId) {
+
+        String paymentResponse = orderServiceImp.sendOrderForPayment(orderId);
+        return ResponseEntity.ok(paymentResponse);
+    }
+
 }
