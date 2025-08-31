@@ -1,5 +1,5 @@
 package com.orderflow.paymentservice.entity;
-
+import com.orderflow.paymentservice.model.PaymentStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -7,12 +7,11 @@ import lombok.*;
 @Entity
 @Table(name = "payments")
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-
+@Builder
+@Getter
+@Setter
 public class PaymentEntity {
 
     @Id
@@ -22,10 +21,11 @@ public class PaymentEntity {
     private Long orderId;
     @NotNull(message = "amount should not be empty")
     private Double amount;
-    @NotNull(message = "paymentMethod should not be empty")
+    @NotNull(message = "paymentMode should not be empty")
     private String paymentMethod;
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "paymentStatus should not be empty")
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
     @NotNull(message = "EmailAddress should not be Empty")
     private String emailAddress;
 

@@ -1,16 +1,17 @@
 package com.orderflow.paymentservice.service;
 
+import com.orderflow.paymentservice.dto.OrderResponse;
 import com.orderflow.paymentservice.entity.PaymentEntity;
 
 import java.util.List;
 
 public interface PaymentService {
 
-    void savePaymentData(PaymentEntity entity);
+    String processPaymentFromOrder(OrderResponse orderResponse);
 
     PaymentEntity updatePaymentDetails(PaymentEntity entity, Long orderId);
 
     List<PaymentEntity> getAllPaymentDetails();
 
-    void deleteByOrderId(Long Orderid);
+    PaymentEntity getPaymentByOrderId(Long orderId);
 }
