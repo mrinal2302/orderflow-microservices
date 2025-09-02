@@ -1,16 +1,24 @@
 package com.inventryService.service;
 
+import com.inventryService.dto.NotificationRequest;
 import com.inventryService.entity.InventoryEntity;
+import com.inventryService.feign.NotificationClient;
+import com.inventryService.globalExceptionHandler.StockNotFoundException;
+import com.inventryService.globalExceptionHandler.WentOutOfStockException;
 import com.inventryService.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
     @Autowired
     private InventoryRepository inventoryRepository;
+
+    @Autowired
+    NotificationClient notificationClient;
 
     @Override
     public InventoryEntity getValueSaveIn(InventoryEntity entity) {
@@ -47,4 +55,24 @@ public class InventoryServiceImpl implements InventoryService {
 
     }
 
+    @Override
+    public Optional<InventoryEntity> inventorySuccessById(Long id) {
+        return inventoryRepository.findById(id);
+    }
+
+    @Override
+    public Optional<InventoryEntity> wentOutOfStock(Long id) {
+        return Optional.ofNullable(inventoryRepository.findById(id).orElseThrow(() -> new WentOutOfStockException("The stock is not available")));
+    }
+
+    @Override
+    public String sendById(Long id) {
+        InventoryEntity entity = inventoryRepository.findById(id).orElseThrow(() -> new WentOutOfStockException("Id not found "));
+        NotificationRequest request = new NotificationRequest();
+        request.setProductId(entity.getProductId());
+        request.setProductName(entity.getProductName());
+        request.setAvailableQuantity(entity.getAvailableQuantity());
+        return notificationClient.sendById(request);
+    }
 }
+
